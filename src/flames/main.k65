@@ -29,7 +29,7 @@ main {
   SDLSTL=a=&<dl SDLSTH=a=&>dl
   GPRIOR=a=0x40 SDMCTL=a=0x21
 
-  a=0 x=a y=a {
+  a=0 x=a {
     screen,x=a
     screen+0x100,x=a
     screen+0x200,x=a
@@ -37,7 +37,7 @@ main {
     x++
   } !=
 
-  {
+  y=a {
     { fonts,x=a x++ y++ y?8 } !=
     y=0 c- a+0x11
   } <
