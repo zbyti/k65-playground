@@ -1,0 +1,70 @@
+//------------------------------------------------------------------------------
+// Flame by koalka/bbsl/karzelki
+//------------------------------------------------------------------------------
+
+var RTCLOK = 0x0014
+var SDLSTL = 0x0230
+var SDLSTH = 0x0231
+var SDMCTL = 0x022F
+var GPRIOR = 0x026F
+var COLOR4 = 0x02C8
+var CHBAS  = 0x02F4
+
+var fonts  = 0x6000
+var screen = 0x6400
+
+data dl {
+  nocross
+  0x42  &<screen &>screen
+  for x=0..19 eval [2]
+  0x41  &<dl &>dl
+}
+
+inline pause {
+  a=RTCLOK { a?RTCLOK } ==
+}
+
+main {
+  COLOR4=a=0x20 CHBAS=a=&>fonts
+  SDLSTL=a=&<dl SDLSTH=a=&>dl
+  GPRIOR=a=0x40 SDMCTL=a=0x21
+
+  a=0 x=a y=a {
+    screen,x=a
+    screen+0x100,x=a
+    screen+0x200,x=a
+    screen+0x300,x=a
+    x++
+  } !=
+
+  {
+    { fonts,x=a x++ y++ y?8 } !=
+    y=0 c- a+0x11
+  } <
+
+  {
+    {
+      a=screen-1,y c-
+      a+screen,y a+screen+1,y a+screen+32,y a>> a>>
+      screen-31,y=a
+
+      a=screen+0xFF,y c-
+      a+screen+0x100,y a+screen+0x101,y a+screen+0x120,y a>> a>>
+      screen+0xE1,y=a
+
+      a=screen+0x1FF,y c-
+      a+screen+0x200,y a+screen+0x201,y a+screen+0x220,y a>> a>>
+      screen+0x1E1,y=a
+
+      y++
+    } !=
+
+    COLBK=a=10 pause
+
+    x=0x1F {
+      a=RANDOM a&15 screen+0x2E0,x=a
+      x--
+    } >=0
+
+  } always
+}
