@@ -5,5 +5,5 @@
 [K65 Docs](http://devkk.net/wiki/index.php/K65)
 
 ```
-$HOME/Programs/k65/bin/k65 @your_program.conf
+$HOME/Programs/k65/bin/k65 @your_program.k65proj
 ```
