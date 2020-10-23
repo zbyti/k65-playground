@@ -1,4 +1,5 @@
-// mode 9++ from MADS
+// Mode 9++  GPRIOR=a=0x40
+// Mode 10++ GPRIOR=a=0x81
 
 var VDSLST=0x0200, SDLSTL=0x0230, SDMCTL=0x022F, GPRIOR=0x026F
 
