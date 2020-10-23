@@ -1,0 +1,26 @@
+// mode 9++ from MADS
+
+var VDSLST=0x0200, SDLSTL=0x0230, SDMCTL=0x022F, GPRIOR=0x026F
+
+var screen = 0xF000
+
+data dl {
+  nocross
+  0x90 0x6F  &<screen &>screen
+  for x=1..58 eval [ x&1 ? 0x8f : 0x2F ]
+  0x41  &<dl &>dl
+}
+
+naked dli {
+  a!!
+  WSYNC=a VSCROL=a=13 VSCROL=a=3
+  a??
+  return_i
+}
+
+main {
+  VDSLST=a=&<dli VDSLST+1=a=&>dli
+  SDLSTL=a=&<dl SDLSTL+1=a=&>dl
+  SDMCTL=a=0x22 GPRIOR=a=0x40 NMIEN=a=0xC0
+  {} always
+}
