@@ -7,7 +7,7 @@ var screen = 0xF000
 data dl {
   nocross
   0x90 0x6F  &<screen &>screen
-  for x=1..58 eval [ x&1 ? 0x8f : 0x2F ]
+  for x=1..58 eval [ x&1 ? 0x8F : 0x2F ]
   0x41  &<dl &>dl
 }
 
