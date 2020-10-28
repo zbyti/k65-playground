@@ -1,0 +1,20 @@
+var LNFLG = 0, RTCLOK = 0x14, tmp = 0x80
+
+main {
+  a=0x3f tmp=a
+  a=0xff x=0xf { HPOSP0,x=a x--} >=0
+
+  {
+.start:
+    WSYNC=a
+    a=LNFLG LNFLG++
+    a^0x20 HPOSP0=a a^tmp HPOSP1=a
+    a=VCOUNT COLPM0=a a^0xff COLPM1=a
+    a=VCOUNT a?0x40 < goto .jump
+    LNFLG-- LNFLG--
+.jump:
+    a=VCOUNT != goto .start
+    a=RTCLOK LNFLG=a a&0x7f != goto .start
+    tmp++
+  } always
+}
