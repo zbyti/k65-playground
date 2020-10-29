@@ -2,7 +2,7 @@ var LNFLG = 0, RTCLOK = 0x14, tmp = 0x80
 
 main {
   a=0x3f tmp=a
-  a=0xff x=0xf { HPOSP0,x=a x--} >=0
+  a=0xff x=0xf { HPOSP0,x=a x-- } >=0
 
   {
 .start:
