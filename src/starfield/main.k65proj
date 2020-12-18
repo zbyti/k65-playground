@@ -2,7 +2,7 @@
 -lowAddr 0x2000
 
 ../../include/defs.k65  main
-main.k65       main
+main.k65                main
 
 -o main.xex
 
