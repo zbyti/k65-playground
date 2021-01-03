@@ -1,0 +1,8 @@
+-system Plus4
+
+main.k65                        main
+
+-o main.prg
+
+-link
+!xplus4 main.prg

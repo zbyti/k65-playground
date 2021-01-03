@@ -1,0 +1,7 @@
+var BORDERCOLOR=0xFF15
+
+main {
+  {
+    BORDERCOLOR++
+  } always
+}

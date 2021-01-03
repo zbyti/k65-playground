@@ -1,0 +1,5 @@
+var bcol=0xd020
+
+main {
+  { bcol++ } always
+}
