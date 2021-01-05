@@ -1,0 +1,9 @@
+-system AtariXL16cart
+
+../../../include/a8_defs.k65    main
+main.k65                        main
+
+-o main.rom
+
+-link
+!atari800 -cart-type 2 -cart main.rom
