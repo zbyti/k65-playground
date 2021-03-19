@@ -1,4 +1,4 @@
-# a8-k65-playground
+#k65-playground
 
 [K65 Sources](https://github.com/Krzysiek-K/k65)
 
