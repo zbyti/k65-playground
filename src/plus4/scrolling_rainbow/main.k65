@@ -1,11 +1,13 @@
 //------------------------------------------------------------------------------
 // Scrolling rainbow - a scrolling rainbow effect in 64 bytes
-//
 // Written by Csabo of LOD 2007
-// Converted to K65 by zbyti
+//
+// http://plus4world.powweb.com/software/Scrolling_Rainbow
 //
 // Uses no zeropage variables, solid timing
 // Carfully chosen number of colors + rasterline's height: gives scrolling effect
+//
+// Converted to K65 by zbyti
 //------------------------------------------------------------------------------
 
 
