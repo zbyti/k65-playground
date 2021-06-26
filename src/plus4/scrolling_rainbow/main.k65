@@ -1,0 +1,41 @@
+//------------------------------------------------------------------------------
+// Scrolling rainbow - a scrolling rainbow effect in 64 bytes
+//
+// Written by Csabo of LOD 2007
+// Converted to K65 by zbyti
+//
+// Uses no zeropage variables, solid timing
+// Carfully chosen number of colors + rasterline's height: gives scrolling effect
+//------------------------------------------------------------------------------
+
+
+var TED_06=0xFF06, TED_13=0xFF13, TED_19=0xFF19, TED_1E=0xFF1E
+
+// one rasterbar (14 lines high)
+data lum {
+  0x00 0x20 0x30 0x40 0x50 0x60 0x70
+  0x70 0x60 0x50 0x40 0x30 0x20 0x00
+}
+
+// rainbow colors (11 colors)
+data col {
+  2 11 4 6 3 12 5 10 7 9 8
+}
+
+main {
+  i+                                // no interrupts
+  a=TED_13 a|0b00000010 TED_13=a    // single clock (more clear then ROL $FF13)
+  a=TED_06 a^0b00010000 TED_06=a    // screen off (more clear then ROR $FF06)
+  x=0
+  {
+    y=13 x++
+    {
+      x?11 =={ x=0 }                // placed here as padding
+      { a=TED_1E } >=0              // horizontal sync to $80!
+
+      a=col,x a|lum,y TED_19=a
+      y--
+    } >=0
+
+  } <0
+}
