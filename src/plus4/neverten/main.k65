@@ -27,7 +27,7 @@ main {
       {
         c- a<<< a!!
         a=0xA0 .scrch: SCREEN_CH,y=a
-        a=0 >={ a=0xFF } .scrcol: SCREEN_COL,y=a
+        a=0 c+?{ a=0xFF } .scrcol: SCREEN_COL,y=a
         a??
         y++ y?8
       } !=
