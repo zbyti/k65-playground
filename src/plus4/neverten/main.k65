@@ -1,0 +1,49 @@
+//------------------------------------------------------------------------------
+// Neverten by Bitglamour
+//
+// https://plus4world.powweb.com/software/Neverten
+//
+// Converted to K65 by zbyti
+//------------------------------------------------------------------------------
+
+var OS_CH_COLOR=0x053B
+
+var SCREEN_COL=0x0900, SCREEN_CH=0x0D00
+
+var CHSET=0xD180
+var NORSCREEN=0xD888
+
+var TED_15=0xFF15, TED_19=0xFF19
+
+
+main {
+  a=0x41 TED_15=a TED_19=a OS_CH_COLOR=a
+
+  //ESC-N Set normal screen, Clear screen, Cursor on Home
+  call NORSCREEN
+
+  {
+    .chr: a=0x80 .chars+1=a x=0
+    {
+      .chars: a=CHSET y=0
+      {
+        c- a<<< a!!
+        a=0xA0 .scrch: SCREEN_CH,y=a
+        a=0 >={ a=0xFF } .scrcol: SCREEN_COL,y=a
+        a??
+        y++ y?8
+      } !=
+      c- a=.scrch+1 a+40 .scrch+1=a .scrcol+1=a
+      .chars+1++
+      a=.chars+1 a?0xD0 =={ .chars+1=a=0x80 }
+      x++ x?7
+    } !=
+    a=0 .scrch+1=a .scrcol+1=a
+    .chr+1++ a=.chr+1 a?0xD0 =={ .chr+1=a=0x80 }
+    {
+      { y++ } !=
+      x++ x?0x48
+    } !=
+  } always
+
+}
