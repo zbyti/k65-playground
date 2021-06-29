@@ -1,0 +1,65 @@
+//------------------------------------------------------------------------------
+// Mikropyros by Luca
+//
+// https://plus4world.powweb.com/software/Mikropyros
+//
+// Converted to K65 by zbyti
+//------------------------------------------------------------------------------
+
+var pagelo   = 0xE0
+var pagehi   = 0xE1
+var screenlo = 0xE2
+var screenhi = 0xE3
+var colorlo  = 0xE4
+var colorhi  = 0xE5
+var height   = 0xE6
+
+var tmp=0x7FE7
+
+var TED_0=0xFF00, TED_15=0xFF15, TED_19=0xFF19, TED_1E=0xFF1E, TED_3F=0xFF3F
+
+main {
+  align 32 //this prevent override main code by the doFlame loop
+
+  i+ TED_3F=a
+  height=a=0xA0 TED_15=a TED_19=a
+
+  {
+    a=height a?2 !={ height-- }
+    x=0x29
+    {
+      a=TED_0 a^TED_1E a&0x3F tmp,x=a x--
+    } !=
+    pagelo=x screenlo=x colorlo=x
+    pagehi=a=0x7C screenhi=a=0x0C colorhi=a=0x08
+
+    { //doFlame
+
+      {
+        c-
+        y=0x27 a=(pagelo),y
+        y++ a+(pagelo),y
+        y++ a+(pagelo),y
+        y=0 a+(pagelo),y
+        a-height <{ a=y }
+        a>> a>> (pagelo),y=a a>> a>>
+        a?8 >=0{ a=8 } x=a
+        a=colors,x (colorlo),y=a
+        a=chars-1,x (screenlo),y=a
+        pagelo++ screenlo++ colorlo++
+      } !=
+
+      colorhi++ screenhi++ pagehi++
+
+    } >=0
+
+  } <0
+}
+
+data colors {
+  0 0x0E 0x14 0x2B 0x32 0x42 0x58 0x67 0x71
+}
+
+data chars {
+  0x2E 0xD6 0x51 0xE0 0xE0 0xE0 0xE0 0xE0
+}
