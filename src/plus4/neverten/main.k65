@@ -15,7 +15,7 @@ var TED_15=0xFF15, TED_19=0xFF19
 
 
 main {
-  a=0x41 TED_15=a TED_19=a
+  a=0x45 TED_15=a TED_19=a
 
   //ESC-N Set normal screen, Clear screen, Cursor on Home
   call NORSCREEN
