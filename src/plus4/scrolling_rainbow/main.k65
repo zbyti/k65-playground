@@ -38,6 +38,5 @@ main {
       a=col,x a|lum,y TED_19=a
       y--
     } >=0
-
   } <0
 }
