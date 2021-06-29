@@ -28,11 +28,11 @@ main {
     a=height a?2 !={ height-- }
     x=0x29
     {
-      a=TED_0 a^TED_1E a&0x3F tmp,x=a
-      x--
+      a=TED_0 a^TED_1E a&0x3F tmp,x=a x--
     } !=
-    pagelo=x screenlo=x colorlo=x
-    pagehi=a=0x7C screenhi=a=0x0C colorhi=a=0x08
+    pagelo=x pagehi=a=0x7C
+    screenlo=x screenhi=a=0x0C
+    colorlo=x colorhi=a=0x08
 
     { //doFlame
 
