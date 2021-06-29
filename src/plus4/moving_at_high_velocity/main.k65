@@ -1,0 +1,37 @@
+//------------------------------------------------------------------------------
+// Moving At High Velocity by Cobini
+//
+// https://plus4world.powweb.com/software/Moving_At_High_Velocity_5000
+//
+// Converted to K65 by zbyti
+//------------------------------------------------------------------------------
+
+var tmp=0x10
+var OS_CH_COLOR=0x053B
+var SCREEN=0x0C00
+var NORSCREEN=0xD888
+var TED_7=0xFF07, TED_15=0xFF15, TED_19=0xFF19, TED_1D=0xFF1D
+
+main {
+  OS_CH_COLOR=a=0x67
+
+  //ESC-N Set normal screen, Clear screen, Cursor on Home
+  call NORSCREEN
+
+  TED_15=a=0x1D TED_19=a
+  
+  {
+    x=0x24 { x?TED_1D } !=
+
+    {
+      { a=TED_1D a&7 a?3 } !=
+
+      a=x a+tmp,x tmp,x=a
+      a>> a&7 TED_7=a
+
+      y++
+      a=0x7B SCREEN,y=a SCREEN+0x100,y=a SCREEN+0x200,y=a SCREEN+0x300,y=a
+      x--
+    } !=
+  } ==
+}
