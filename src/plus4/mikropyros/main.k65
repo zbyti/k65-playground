@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// Mikropyros by Luca
+//  by Luca
 //
 // https://plus4world.powweb.com/software/Mikropyros
 //
@@ -28,7 +28,8 @@ main {
     a=height a?2 !={ height-- }
     x=0x29
     {
-      a=TED_0 a^TED_1E a&0x3F tmp,x=a x--
+      a=TED_0 a^TED_1E a&0x3F tmp,x=a
+      x--
     } !=
     pagelo=x screenlo=x colorlo=x
     pagehi=a=0x7C screenhi=a=0x0C colorhi=a=0x08
