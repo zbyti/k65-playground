@@ -5,10 +5,8 @@
 var COLORRAM=0x0923, SCREEN=0x0C00
 var TED_15=0xFF15, TED_19=0xFF19
 
-var iter        = 0xE0
-var lumen       = 0xE1
-var pointerLo   = 0xE2
-var pointerHi   = 0xE3
+var iter = 0xE0
+var lumen, pointerLo, pointerHi
 
 func fillScreen {
   x=0
