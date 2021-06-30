@@ -16,7 +16,13 @@ data colors {
 }
 
 main {
-  i+ a=0 SCROLY=a EXTCOL=a
+  i+
+
+  //turn off screen. (now you have only borders!)
+  SCROLY=a=0
+
+  //make border black
+  EXTCOL=a
 
   {
     x=51 y=0x7a
