@@ -4,7 +4,7 @@
 
 var irq_serv_lo=0x0314
 var irq_serv_hi=0x0315
-var irq_serv_default=0xEA34
+var irq_serv_default=0xEA34 // Default: $EA31
 
 naked irq {
   VICIRQ=a=0xFF
