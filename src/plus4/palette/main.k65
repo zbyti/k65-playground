@@ -28,12 +28,8 @@ main {
   iter=a=0
   {
     a<< a<< a<< a<< lumen=a
-    x=0 {
-      y=0 a=x a|lumen (pointerLo),y=a
-      c- pointerLo++ c-?{ pointerHi++ }
-      x++ x?16
-    } !=
-    a=pointerLo c- a+24 c-?{ pointerHi++ } pointerLo=a
+    x=15 { a=x y=a a|lumen (pointerLo),y=a x-- } >=0
+    a=pointerLo c- a+40 c-?{ pointerHi++ } pointerLo=a
     iter++ a=iter a?8
   } !=
 
