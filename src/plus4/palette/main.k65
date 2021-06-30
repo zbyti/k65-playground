@@ -7,8 +7,8 @@ var TED_15=0xFF15, TED_19=0xFF19
 
 var iter        = 0xE0
 var lumen       = 0xE1
-var pointerLo       = 0xE2
-var pointerHi       = 0xE3
+var pointerLo   = 0xE2
+var pointerHi   = 0xE3
 
 func fillScreen {
   x=0
