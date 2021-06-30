@@ -1,9 +1,0 @@
--system C64
-
-../../../include/c64_defs.k65   main
-main.k65                        main
-
--o main.prg
-
--link
-!x64 main.prg

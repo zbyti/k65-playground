@@ -19,7 +19,7 @@ main {
   i+
 
   //turn off screen. (now you have only borders!)
-  SCROLY=a=0
+  VICCR1=a=0
 
   //make border black
   EXTCOL=a
