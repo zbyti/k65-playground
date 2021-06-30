@@ -11,8 +11,15 @@ naked irq {
 
   x=5 { x-- } !=
 
-  x=0 { y=8 .jump: a=colors,x EXTCOL=a BGCOL0=a x++ y-- } ==
-  a=x x=7 { x-- } != x=a x?0x8C c-? goto .jump
+  x=0 {
+    y=8
+    .jump: a=colors,x EXTCOL=a BGCOL0=a x++
+    y--
+  } ==
+  
+  a=x x=7 { x-- } !=
+  
+  x=a x?0x8C c-? goto .jump
 
   goto irq_serv_default
 }
