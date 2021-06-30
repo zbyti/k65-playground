@@ -11,7 +11,8 @@ naked irq {
 
   x=5 { x-- } !=
 
-  x=0 {
+  x=0
+  {
     y=8
     .jump: a=colors,x EXTCOL=a BGCOL0=a x++
     y--
