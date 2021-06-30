@@ -1,0 +1,43 @@
+//------------------------------------------------------------------------------
+// C+4 palette by zbyti
+//------------------------------------------------------------------------------
+
+var COLORRAM=0x0923, SCREEN=0x0C00
+var TED_15=0xFF15, TED_19=0xFF19
+
+var iter        = 0xE0
+var lumen       = 0xE1
+var rowLo       = 0xE2
+var rowHi       = 0xE3
+
+func fillScreen {
+  x=0
+  {
+    SCREEN,x=a
+    SCREEN+0x100,x=a
+    SCREEN+0x200,x=a
+    SCREEN+0x300,x=a
+    x++
+  } !=
+}
+
+main {
+  rowLo=a=&<COLORRAM rowHi=a=&>COLORRAM
+  
+  a=0 TED_15=a TED_19=a  
+  a=0xA0 fillScreen
+
+  iter=a=0
+  {
+    a<< a<< a<< a<< lumen=a
+    x=0 {
+      y=0 a=x a|lumen (rowLo),y=a
+      c- rowLo++ c-?{ rowHi++ }
+      x++ x?16
+    } !=
+    a=rowLo c- a+24 c-?{ rowHi++ } rowLo=a
+    iter++ a=iter a?8
+  } !=
+
+  {} always
+}
