@@ -1,0 +1,39 @@
+//------------------------------------------------------------------------------
+// Mikropyros by Ulysses777
+//
+// http://plus4world.powweb.com/software/Rain
+//
+// Converted to K65 by zbyti
+//------------------------------------------------------------------------------
+
+var NORSCREEN=0xD880
+
+var TED_11=0xFF11, TED_15=0xFF15, TED_19=0xFF19, TED_1E=0xFF1E, TED_3F=0xFF3F
+
+var plot=0xFFF0
+var print=0xFF4F
+
+main {
+  //clear screen & med. blue cursor colour
+  a=0x46 call NORSCREEN
+
+  TED_15=a=6 TED_19=a
+
+  {
+    {
+      { x-- } !=
+      TED_11=x
+
+      y=TED_1E y?40
+    } c+?
+
+    //print raindrop
+    call plot call print data { 98 0 }
+
+    //print Esc+I, move lines down
+    call plot call print data { 27 73 0 }
+
+    //sound
+    TED_11=a=0x11
+  } !=
+}
