@@ -29,7 +29,7 @@ main {
     x=15 {
       a=x y=a a|lumen (pointerLo),y=a x--
     } >=0
-    a=pointerLo c- a+40 c-?{ pointerHi++ } pointerLo=a
+    a=pointerLo c- a+40 c+?{ pointerHi++ } pointerLo=a
     iter++ a=iter a?8
   } !=
 
