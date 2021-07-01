@@ -1,0 +1,12 @@
+--- Symbol List
+COLORRAM                 0923                  
+SCREEN                   0c00                  
+TED_6                    ff06                  
+TED_19                   ff19                  
+TED_1C                   ff1c                  
+TED_1D                   ff1d                  
+shuttertab               1100                  
+cols                     1200                  
+cols_orig                1300                  
+main                     ffffffff                  
+--- End of Symbol List.

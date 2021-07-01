@@ -1,0 +1,64 @@
+//------------------------------------------------------------------------------
+// Shutters by Shadow
+//
+// http://plus4world.powweb.com/software/Shutters
+//
+// Converted to K65 by zbyti
+//------------------------------------------------------------------------------
+
+var COLORRAM=0x0923, SCREEN=0x0C00
+var TED_6=0xFF06, TED_19=0xFF19, TED_1C=0xFF1C, TED_1D=0xFF1D
+
+var shuttertab = 0x1100
+var cols       = 0x1200
+var cols_orig  = 0x1300
+
+data bartab {
+  0 0
+  0x10 0x20 0x30 0x40 0x50 0x60 0x70
+  0x70 0x60 0x50 0x40 0x30 0x20 0x10
+}
+
+// Create the shutter indexing table
+inline fillShutterTab {
+  {
+    a=y a<< .val+1=a x=0x10
+    {
+      .val: a=0 .tabptr: shuttertab=a
+      .tabptr+1++ .val+1--
+      x--
+    } !=
+    y--
+  } !=
+}
+
+// Create color bar table
+inline fillColsOrig {
+  {
+    a=x a>> a&15 y=a a=x a>> a>> a>> a>> a>> a<< a|bartab,y
+    cols_orig,x=a cols_orig+0x100,x=a
+    x--
+  } !=
+}
+
+main {
+  i+ fillShutterTab fillColsOrig TED_6=x
+
+  {
+    { a=TED_1C a&1 } ==
+    a=0x20 { a?TED_1D } !=
+
+    {
+      y=shuttertab,x a=cols,y
+      y=0x12 { y-- } !=
+      TED_19,y=a
+      x++
+    } !=
+    TED_19=x
+
+    {
+      .colpos: a=cols_orig,x cols,x=a x--
+    } !=
+    .colpos+1--
+  } >>=
+}
