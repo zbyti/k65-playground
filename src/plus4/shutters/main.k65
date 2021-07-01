@@ -6,7 +6,6 @@
 // Converted to K65 by zbyti
 //------------------------------------------------------------------------------
 
-var COLORRAM=0x0923, SCREEN=0x0C00
 var TED_6=0xFF06, TED_19=0xFF19, TED_1C=0xFF1C, TED_1D=0xFF1D
 
 var shuttertab = 0x1100
