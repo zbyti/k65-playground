@@ -1,0 +1,9 @@
+-system Plus4
+
+table.k65                       main
+main.k65                        main
+
+-o main.prg
+
+-link
+!plus4emu main.prg
