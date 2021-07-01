@@ -1,5 +1,14 @@
 // Basic table generator
 // 1 I=8192:FORY=-13TO12:FORX=-20.5TO19:POKEI,(12*SQR(X*X+Y*Y)AND 240)+(16*ATN(Y/X)AND15):I=I+1:NEXTX,Y
+
+// I=8192
+// FOR Y=-13 TO 12
+//   FOR X = -20.5 TO 19
+//     POKE I,(12*SQR(X*X+Y*Y) AND 240) + (16*ATN(Y/X) AND 15)
+//     I=I+1
+//   NEXT X
+// NEXT Y
+
 data table {
   address 0x2000
   0x29 0x19 0x09 0x0A 0xFA 0xFB 0xEB 0xEC 0xDC 0xDD 0xCE 0xCF 0xBF 0xB0 0xA1 0xA2 0xA3 0xA4 0x96 0x97
