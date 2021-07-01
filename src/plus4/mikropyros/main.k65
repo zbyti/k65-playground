@@ -19,7 +19,7 @@ var tmp=0x7FE7
 var TED_0=0xFF00, TED_15=0xFF15, TED_19=0xFF19, TED_1E=0xFF1E, TED_3F=0xFF3F
 
 main {
-  align 32 //this prevent override main code by the doFlame loop
+  address 0x1100 //this prevent override main code by the doFlame loop
 
   i+ TED_3F=a
   height=a=0xA0 TED_15=a TED_19=a
