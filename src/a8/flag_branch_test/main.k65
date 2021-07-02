@@ -12,8 +12,8 @@ main {
   c- a=0xFF a+1 c+?{ next_letter }
   c+ a=0x00 a-1 c-?{ next_letter }
 
-  tmp=a=0xFF a&?tmp v+?{ next_letter}
-  tmp=a=0x00 a&?tmp v-?{ next_letter}
+  tmp=a=0xFF a&?tmp v+?{ next_letter }
+  tmp=a=0x00 a&?tmp v-?{ next_letter }
 
   a=0x00 z+?{ next_letter }
   a=0xFF z-?{ next_letter }
