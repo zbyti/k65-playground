@@ -1,0 +1,29 @@
+var SAVMSC=0x58
+var letter=0x80, tmp
+
+func next_letter {
+  (SAVMSC),y=a=letter letter++
+  y++
+}
+
+main {
+  y=0 letter=a=33
+
+  c- a=0xFF a+1 c+?{ call next_letter }
+  c+ a=0x00 a-1 c-?{ call next_letter }
+
+  c- a=0xFF a+1 c+?{ call next_letter }
+  c+ a=0x00 a-1 c-?{ call next_letter }
+
+  tmp=a=0xFF a&?tmp v+?{ call next_letter}
+  tmp=a=0x00 a&?tmp v-?{ call next_letter}
+
+  a=0x00 z+?{ call next_letter }
+  a=0xFF z-?{ call next_letter }
+
+  a=0x80 n+?{ call next_letter }
+  a=0x7F n-?{ call next_letter }
+
+  {} always
+
+}
