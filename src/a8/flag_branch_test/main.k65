@@ -22,5 +22,4 @@ main {
   a=0x7F n-?{ call next_letter }
 
   {} always
-
 }
