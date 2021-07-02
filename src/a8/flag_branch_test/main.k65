@@ -1,13 +1,12 @@
 var SAVMSC=0x58
-var letter=0x80, tmp
+var tmp=0x80
 
 func next_letter {
-  (SAVMSC),y=a=letter letter++
-  y++
+  a=y c- a+33 (SAVMSC),y=a y++
 }
 
 main {
-  y=0 letter=a=33
+  y=0
 
   c- a=0xFF a+1 c+?{ next_letter }
   c+ a=0x00 a-1 c-?{ next_letter }
