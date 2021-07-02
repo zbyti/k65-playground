@@ -9,17 +9,17 @@ func next_letter {
 main {
   y=0 letter=a=33
 
-  c- a=0xFF a+1 c+?{ call next_letter }
-  c+ a=0x00 a-1 c-?{ call next_letter }
+  c- a=0xFF a+1 c+?{ next_letter }
+  c+ a=0x00 a-1 c-?{ next_letter }
 
-  tmp=a=0xFF a&?tmp v+?{ call next_letter}
-  tmp=a=0x00 a&?tmp v-?{ call next_letter}
+  tmp=a=0xFF a&?tmp v+?{ next_letter}
+  tmp=a=0x00 a&?tmp v-?{ next_letter}
 
-  a=0x00 z+?{ call next_letter }
-  a=0xFF z-?{ call next_letter }
+  a=0x00 z+?{ next_letter }
+  a=0xFF z-?{ next_letter }
 
-  a=0x80 n+?{ call next_letter }
-  a=0x7F n-?{ call next_letter }
+  a=0x80 n+?{ next_letter }
+  a=0x7F n-?{ next_letter }
 
   {} always
 }
