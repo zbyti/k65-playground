@@ -12,9 +12,6 @@ main {
   c- a=0xFF a+1 c+?{ call next_letter }
   c+ a=0x00 a-1 c-?{ call next_letter }
 
-  c- a=0xFF a+1 c+?{ call next_letter }
-  c+ a=0x00 a-1 c-?{ call next_letter }
-
   tmp=a=0xFF a&?tmp v+?{ call next_letter}
   tmp=a=0x00 a&?tmp v-?{ call next_letter}
 
