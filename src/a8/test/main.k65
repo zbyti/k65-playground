@@ -1,4 +1,11 @@
+data test {
+  0 0 code { a=x }
+}
+
+
 main {
+
+  a=&<test
 
   //BCS
   c-?{ y=a }
@@ -14,6 +21,24 @@ main {
 
   //BCC
   { y=a } c-?
+  *4
+
+  a=&<test
+
+  //BVS
+  v-?{ y=a }
+  *4
+
+  //BVC
+  v+?{ y=a }
+  *4
+
+  //BVS
+  { y=a } v+?
+  *4
+
+  //BVC
+  { y=a } v-?
   *4
 
   {} always
