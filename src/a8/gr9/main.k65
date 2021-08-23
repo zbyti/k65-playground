@@ -1,0 +1,62 @@
+//-----------------------------------------------------------------------------
+//Thanks to Bruce Nelson for his artwork data and the original BASIC demo.
+//-----------------------------------------------------------------------------
+
+[PIC_LINCOLN = 0x3010]
+[PIC_MONA    = 0x5010]
+
+//-----------------------------------------------------------------------------
+
+var RTCLOK=0x14
+
+//-----------------------------------------------------------------------------
+
+func wait {
+  c- a+RTCLOK { a?RTCLOK } !=
+}
+
+inline pause {
+  a=RTCLOK { a?RTCLOK } ==
+}
+
+inline wait4s { a=200 wait }
+
+//-----------------------------------------------------------------------------
+
+naked nmi { RTCLOK++ return_i }
+
+func init {
+  pause i+ DMACTL=a=0 NMIEN=a=0 PORTB=a=0xFE
+
+  PRIOR=a=0x40 COLBK=a=0xA0
+
+  DLISTL=a=&<dl DLISTH=a=&>dl
+  NMIADL=a=&<nmi NMIADH=a=&>nmi
+  NMIEN=a=0x40 DMACTL=a=0b00100010 
+}
+
+//-----------------------------------------------------------------------------
+
+main {
+  init
+
+  {
+    wait4s F_LMS_H=a=&>lincoln S_LMS_H=a=&>lincoln+0x1000
+    wait4s F_LMS_H=a=&>mona    S_LMS_H=a=&>mona+0x1000
+  } always
+}
+
+//-----------------------------------------------------------------------------
+
+data dl {
+  nocross
+  for x=1..3 eval [ 0x70 ]
+  0x4F &<mona F_LMS_H: &>mona        for x=1..95 eval [ 0xF ]
+  0x4F 0      S_LMS_H: &>mona+0x1000 for x=1..95 eval [ 0xF ]
+  0x41 &<dl &>dl
+}
+
+data lincoln { address [PIC_LINCOLN] binary "data/lincoln.gr9" }
+data mona    { address [PIC_MONA]    binary "data/mona.gr9"    }
+
+//-----------------------------------------------------------------------------

@@ -1,0 +1,170 @@
+// ================================================
+//
+// antic_nmien = $40
+//
+// %01000000 $40 VBI
+// %10000000 $80 DLI
+// %11000000 $c0 VBI + DLI
+//
+// ================================================
+//
+// pia_portb = $fe
+//
+// PORTB_BASIC_OFF + PORTB_SELFTEST_OFF + %01111100
+//
+// PORTB_SELFTEST_OFF = %10000000; portb bit value to turn Self-Test off
+// PORTB_BASIC_OFF    = %00000010; portb bit value to turn Basic off
+// PORTB_SYSTEM_ON    = %00000001; portb bit value to turn System on
+//
+// ================================================
+//
+// Now the routine that lets you get to
+// the RAM that is under the OS.
+// There are actually 2 memory areas
+// present:
+//    4K at $C000 to $CFFF, 49152 to 53247
+//   10K at $D800 to $FFFF, 55296 to 65535
+//
+// The last 6 bytes of the 10K area are not
+// usable, since that is where the interrupt
+// routines are located.  Therefore do not
+// use any RAM above $FFF9 (65529) or you
+// will crash the system.
+//
+// ================================================
+//
+// DMACTL
+// --dr pmww Direct Memory Access Control
+//        ^^ - Playfield width (0-disable, 1-narrow, 2-normal, 3-wide)
+//       ^   - Enable missile DMA
+//      ^    - Enable player DMA
+//    ^      - Player/missile single line resolution
+//   ^       - Display list DMA
+//
+// ================================================                
+
+var RTCLOK=0x14
+
+var screen=0x4000
+
+//-----------------------------------------------------------------------------
+
+inline pause {
+  a=RTCLOK { a?RTCLOK } ==
+}
+
+inline wsync { WSYNC=a }
+inline phr { a!! a=x a!! a=y a!! }
+inline plr { a?? y=a a?? x=a a?? }
+
+func wait {
+  c- a+RTCLOK { a?RTCLOK } !=
+}
+
+//-----------------------------------------------------------------------------
+// VBLANK interrupt
+//-----------------------------------------------------------------------------
+inline vbi {
+  
+  //mode2 960 (0x3C0) chars
+  screen+0x3BF=a=RANDOM
+
+}
+
+//-----------------------------------------------------------------------------
+// DL interrupts
+//-----------------------------------------------------------------------------
+naked dli {
+  a!!
+
+  CHBASE=a=&>charset_1
+  wsync COLBK=a=0xE
+
+  dliJMP+1=a=&<dli_1 dliJMP+2=a=&>dli_1
+  a?? return_i
+}
+
+naked dli_1 {
+  a!!
+
+  CHBASE=a=&>charset_2
+  wsync COLBK=a=0xC4
+
+  dliJMP+1=a=&<dli_2 dliJMP+2=a=&>dli_2
+  a?? return_i
+}
+
+naked dli_2 {
+  a!!
+
+  CHBASE=a=&>charset_3
+  wsync COLBK=a=0
+
+  dliJMP+1=a=&<dli dliJMP+2=a=&>dli
+  a?? return_i
+}
+
+//-----------------------------------------------------------------------------
+// NMI handler
+//-----------------------------------------------------------------------------
+naked nmi {
+  a&?NMIST n+?{ dliJMP: goto dli }
+
+  RTCLOK++
+
+  phr vbi plr return_i
+}
+
+
+//-----------------------------------------------------------------------------
+
+func init {
+  pause i+
+
+  DMACTL=NMIEN=a=0 PORTB=a=0xFE
+
+  DLISTL=a=&<dl DLISTH=a=&>dl
+  NMIADL=a=&<nmi NMIADH=a=&>nmi
+  
+  DMACTL=a=0b00100010 NMIEN=a=0xC0
+}
+
+//-----------------------------------------------------------------------------
+
+main {
+  init
+
+  x=0 { a=x screen,x=a screen+0x140,x=a screen+0x280,x=a x++ } !=
+
+  {} always
+}
+
+//-----------------------------------------------------------------------------
+
+data dl {
+  nocross
+  0x70 0x70 0xF0
+  0x42 &<screen &>screen for x=1..6 eval [ 2 ]
+  0x82 for x=1..7 eval [ 2 ]
+  0x82 for x=1..8 eval [ 2 ]
+  0x41 &<dl &>dl
+}
+
+//-----------------------------------------------------------------------------
+
+data charset_1 {
+  address 0x4400
+  binary "fonts/ACTFONT.FNT"
+}
+
+data charset_2 {
+  address 0x4800
+  binary "fonts/AMSTRAD.FNT"
+}
+
+data charset_3 {
+  address 0x4C00
+  binary "fonts/SPECTR.FNT"
+}
+
+//-----------------------------------------------------------------------------

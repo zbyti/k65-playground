@@ -1,0 +1,31 @@
+//Digitized Graphics 9 'CONNIE' From SOUTH_BAY_ATARI  213-973-424
+[PIC_ADR=0x3010]
+
+var RTCLOK=0x14
+
+inline pause {
+  a=RTCLOK { a?RTCLOK } ==
+}
+
+main {
+  pause
+  
+  i+ NMIEN=a=0 DMACTL=a
+  
+  PRIOR=a=0x40 COLBK=a=0xB0
+  DLISTL=a=&<dl DLISTH=a=&>dl
+
+  DMACTL=a=0b00100010
+
+  {} always
+}
+
+data dl {
+  nocross
+  for x=1..3 eval [ 0x70 ]
+  0x4F &<picture &>picture for x=1..95 eval [ 0xF ]
+  0x4F 0 &>picture+0x1000  for x=1..89 eval [ 0xF ]
+  0x41 &<dl &>dl
+}
+
+data picture { address [PIC_ADR] binary "connie.gr9" }

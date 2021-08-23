@@ -1,0 +1,12 @@
+-system AtariXL
+-lowAddr 0x2000
+
+a8_registers.k65                main
+a8_os.k65                       main
+tools.k65                       main
+main.k65                        main
+
+-o main.xex
+
+-link
+!atari800 main.xex

@@ -1,0 +1,13 @@
+var rtclok=0x14
+
+inline wsync { WSYNC=a }
+
+inline doRainbow {
+  wsync
+  a=rtclok c- a+VCOUNT
+  COLPF2=a COLBK=a
+}
+
+main {
+  { doRainbow } always
+}

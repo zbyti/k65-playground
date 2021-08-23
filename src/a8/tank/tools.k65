@@ -1,0 +1,19 @@
+func wait {
+  c- a+RTCLOK { a?RTCLOK } !=
+}
+
+inline pause {
+  a=RTCLOK { a?RTCLOK } ==
+}
+
+inline wsync {
+  WSYNC=a
+}
+
+inline phr {
+  a!! a=x a!! a=y a!!
+}
+
+inline plr {
+  a?? y=a a?? x=a a??
+}
