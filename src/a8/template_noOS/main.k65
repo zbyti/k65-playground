@@ -62,11 +62,25 @@ func wait {
 }
 
 //-----------------------------------------------------------------------------
+// initialize system
+//-----------------------------------------------------------------------------
+inline init {
+  pause
+
+  i+ d- NMIEN=DMACTL=PORTA=GRACTL=AUDCTL=a=0 SKCTL=a=3 PORTB=a=0xFE s=x=0xFF
+
+  DLISTL=a=&<dl DLISTH=a=&>dl
+  NMIADL=a=&<nmi NMIADH=a=&>nmi
+
+  DMACTL=a=0b00100010 NMIEN=a=0xC0
+}
+
+//-----------------------------------------------------------------------------
 // VBLANK interrupt
 //-----------------------------------------------------------------------------
 inline vbi {
   
-  //mode2 960 (0x3C0) chars
+  //mode2 960 [0x3C0] chars
   screen+0x3BF=a=RANDOM
 
 }
@@ -113,20 +127,6 @@ naked nmi {
   RTCLOK++
 
   phr vbi plr return_i
-}
-
-
-//-----------------------------------------------------------------------------
-
-func init {
-  pause i+
-
-  DMACTL=NMIEN=a=0 PORTB=a=0xFE
-
-  DLISTL=a=&<dl DLISTH=a=&>dl
-  NMIADL=a=&<nmi NMIADH=a=&>nmi
-  
-  DMACTL=a=0b00100010 NMIEN=a=0xC0
 }
 
 //-----------------------------------------------------------------------------

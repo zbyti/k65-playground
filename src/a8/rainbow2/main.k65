@@ -5,7 +5,7 @@ inline wsync { WSYNC=a }
 inline doRainbow {
   wsync
   a=rtclok c- a+VCOUNT
-  COLPF2=a COLBK=a
+  COLPF2=COLBK=a
 }
 
 main {

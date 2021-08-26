@@ -1,0 +1,8 @@
+-system Py65
+
+main.k65                        main
+
+-o output/test.bin
+
+-link
+!py65mon -l output/test.bin -g 0

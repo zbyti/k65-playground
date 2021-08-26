@@ -5,7 +5,7 @@
 ../../../include/a8_defs.k65    main
 main.k65                        main
 
--o main.xex
+-o output/main.xex
 
 -link
-!atari800 main.xex
+!atari800 output/main.xex

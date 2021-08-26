@@ -1,0 +1,9 @@
+var output=0xF001, input=0xF004
+
+main {
+  address 0x0200
+
+  output=a=65
+
+  return
+}

@@ -1,0 +1,4 @@
+data gfx_game {
+  address [GFX_GAME]
+  binary "gfx/game.fnt"
+}

@@ -5,5 +5,5 @@ all: main
 main:
 	$(K65) @main.k65proj
 
-clean:
-	rm -f output/*
+save:
+	cp /dev/shm/main.xex bin/game.xex

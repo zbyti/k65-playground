@@ -1,0 +1,121 @@
+//-----------------------------------------------------------------------------
+
+[
+  STRONG_WALL = 0x1E
+  WEAK_WALL   = 0x0A
+  STONE       = 0x0C
+  HEART       = 0x10
+  HERO        = 0x18
+  EXIT        = 0x1C
+  BOMB        = 0x12
+  GRASS       = 0x0E
+]
+
+[
+  LV_SIZE    = 0xF1
+  LV_START   = 1
+  SCR_OFFSET = 0x0200
+  SCREEN_1   = 0x0200
+  SCREEN_2   = SCREEN_1+SCR_OFFSET
+  GFX_GAME   = 0x4000
+  LEVELS     = 0x4400
+]
+
+//-----------------------------------------------------------------------------
+
+var count_1=0, count_2, tmp_a, tmp_b, tmp_c, p_tmp[2], w_tmp[2], p_current_lv[2]
+
+var screen_1=[SCREEN_1], screen_2=[SCREEN_2]
+
+//-----------------------------------------------------------------------------
+// initialize system
+//-----------------------------------------------------------------------------
+
+inline set_colors { COLPF0=a=4 COLPF1=a=6 COLPF2=a=0xE COLPF3=a=0xA COLBK=a=0 }
+
+inline init {
+  pause
+
+  i+ d- NMIEN=DMACTL=PORTA=GRACTL=AUDCTL=a=0 SKCTL=a=3 PORTB=a=0xFE s=x=0xFF
+
+  CHBASE=a=&>gfx_game
+  DLISTL=a=&<dl DLISTH=a=&>dl
+  NMIADL=a=&<nmi NMIADH=a=&>nmi
+
+  set_colors
+
+  DMACTL=a=0b00100010 NMIEN=a=0x40
+}
+
+//-----------------------------------------------------------------------------
+// draw procedures
+//-----------------------------------------------------------------------------
+
+func draw_level {
+  .LV_TO_DRAW+1=a=p_current_lv .LV_TO_DRAW+2=a=p_current_lv+1
+
+  //reset 2x2 brush SMC vector
+  .LT+1=.LD+1=a=&<screen_1+224 .RT+1=.RD+1=a=&<screen_1+225
+  .LT+2=.RT+2=a=&>screen_1+0x100 .LD+2=.RD+2=a=&>screen_2+0x100
+  
+  y=[LV_SIZE] {
+    .LV_TO_DRAW: a=levels,y
+
+    x=a .LT: screen_1=x x++ .RT: screen_1+1=x //2x2 brush LT - left top,  RT - right top
+    a|0x20 
+    x=a .LD: screen_2=x x++ .RD: screen_2+1=x //2x2 brush LD - left down, RF - right down
+
+    //move 2x2 brush to left from bottom right corner of the screen
+    c+ a=.LT+1 a-2 .LT+1=.LD+1=a c-?{ .LT+2-- .RT+2-- .LD+2-- .RD+2-- } x=a x++ .RT+1=.RD+1=x
+
+    y--
+  } !=
+}
+
+func show_level {
+  factor1=x factor2=a=[LV_SIZE] mul8x8
+
+  a=&>levels c- a+prodH p_current_lv+1=a
+  a=&<levels c- a+prodL p_current_lv=a c+?{ p_current_lv+1++ }
+
+  draw_level
+}
+
+func slideshow {
+  count_1=a=[LV_START]
+  {
+    x=count_1 show_level count_1++ wait4s
+    y=[LV_SIZE] a=(p_current_lv),y z+?{ goto slideshow }
+  } always  
+}
+
+//-----------------------------------------------------------------------------
+// VBLANK interrupt
+//-----------------------------------------------------------------------------
+inline vbi {
+
+}
+
+//-----------------------------------------------------------------------------
+// NMI handler
+//-----------------------------------------------------------------------------
+naked nmi {
+  RTCLOK++
+
+  phr vbi plr return_i
+}
+
+//-----------------------------------------------------------------------------
+
+main {
+  init
+
+  //x=13 show_level
+
+  slideshow
+
+  {} always
+
+}
+
+//-----------------------------------------------------------------------------
