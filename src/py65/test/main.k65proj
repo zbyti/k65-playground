@@ -2,7 +2,7 @@
 
 main.k65                        main
 
--o output/test.bin
+-o /dev/shm/test.bin
 
 -link
-!py65mon -l output/test.bin -g 0
+!py65mon -l /dev/shm/test.bin -g 0

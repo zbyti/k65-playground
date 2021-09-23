@@ -50,7 +50,7 @@ inline vbi {
 
     drawTank
 
-    //simlation
+    //simulation
     a=RANDOM a?7 =={ tankJumpCounter=a=50 }
 
   }
