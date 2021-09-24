@@ -1,0 +1,24 @@
+--- Symbol List
+SCREEN                   1e00                  
+COLOR_RAM                9600                  
+VIC_9000                 9000                  
+VIC_9001                 9001                  
+VIC_9002                 9002                  
+VIC_9003                 9003                  
+VIC_9004                 9004                  
+VIC_9005                 9005                  
+VIC_9006                 9006                  
+VIC_9007                 9007                  
+VIC_9008                 9008                  
+VIC_9009                 9009                  
+VIC_900A                 900a                  
+VIC_900B                 900b                  
+VIC_900C                 900c                  
+VIC_900D                 900d                  
+VIC_900E                 900e                  
+VIC_900F                 900f                  
+clear_screen             1010                  
+__label_1                1014                  
+main                     1022                  
+__label_2                1045                  
+--- End of Symbol List.
