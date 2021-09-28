@@ -1,0 +1,11 @@
+-system VIC20
+
+-keep fonts
+
+
+main.k65                        main
+
+-o main.prg
+
+-link
+!xvic main.prg

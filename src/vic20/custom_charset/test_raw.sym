@@ -1,0 +1,30 @@
+--- Symbol List
+ZP_0                     0000                  
+RTCLOK                   00a2                  
+CHARSET                  1c00                  
+SCREEN_RAM               1e00                  
+COLOR_RAM                9600                  
+VICCRO                   9000                  
+VICCR1                   9001                  
+VICCR2                   9002                  
+VICCR3                   9003                  
+VICCR4                   9004                  
+VICCR5                   9005                  
+VICCR6                   9006                  
+VICCR7                   9007                  
+VICCR8                   9008                  
+VICCR9                   9009                  
+VICCRA                   900a                  
+VICCRB                   900b                  
+VICCRC                   900c                  
+VICCRD                   900d                  
+VICCRE                   900e                  
+VICCRF                   900f                  
+IRQROUT                  eabf                  
+CINV_L                   0314                  
+CINV_H                   0315                  
+NMINV_L                  0318                  
+NMINV_H                  0319                  
+STACK                    0100                  
+IER1                     911e                  
+--- End of Symbol List.
