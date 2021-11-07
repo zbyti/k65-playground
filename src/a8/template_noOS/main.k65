@@ -67,7 +67,9 @@ func wait {
 inline init {
   pause
 
-  i+ d- NMIEN=DMACTL=PORTA=GRACTL=AUDCTL=a=0 SKCTL=a=3 PORTB=a=0xFE s=x=0xFF
+  i+ d- NMIEN=DMACTL=PORTA=PRIOR=GRACTL=AUDCTL=SKCTL=a=0
+  CHACTL=a=2 SKCTL=a=3 a=PACTL a|4 PACTL=a PORTB=a=0xFE
+  s=x=0xFF
 
   DLISTL=a=&<dl DLISTH=a=&>dl
   NMIADL=a=&<nmi NMIADH=a=&>nmi

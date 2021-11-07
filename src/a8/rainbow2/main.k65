@@ -1,11 +1,8 @@
 var rtclok=0x14
 
-inline wsync { WSYNC=a }
-
 inline doRainbow {
-  wsync
-  a=rtclok c- a+VCOUNT
-  COLPF2=COLBK=a
+  a=rtclok c- a+VCOUNT a<<
+  WSYNC=COLPF2=COLBK=a
 }
 
 main {
