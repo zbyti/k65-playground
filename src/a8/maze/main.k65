@@ -1,8 +1,9 @@
 //-----------------------------------------------------------------------------
 
 [
-  SCREEN = 960
-  SCREEN_BLOCK = SCREEN/4
+  SCREEN       = 960
+  SCREEN_DIV   = 4
+  SCREEN_BLOCK = SCREEN/SCREEN_DIV
 ]
 
 //-----------------------------------------------------------------------------
@@ -30,7 +31,7 @@ inline draw {
 main {
   {
     y=SAVMSC y-- screen=y screen+1=a=SAVMSC+1
-    x=4 { draw x-- }!=
+    x=SCREEN_DIV { draw x-- }!=
     a=100 wait
   } always
 }
