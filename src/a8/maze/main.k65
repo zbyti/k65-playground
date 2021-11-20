@@ -1,38 +1,38 @@
 //-----------------------------------------------------------------------------
 
 [
-  SCREEN       = 960
+  SCREEN_SIZE  = 960
   SCREEN_DIV   = 4
-  SCREEN_BLOCK = SCREEN/SCREEN_DIV
+  SCREEN_BLOCK = SCREEN_SIZE / SCREEN_DIV
 ]
 
 //-----------------------------------------------------------------------------
 
 var RTCLOK=0x14, SAVMSC=0x58, RND=0xD20A
 
-var screen[2]=0x80
+var screen=0, counter=0x80
 
 //-----------------------------------------------------------------------------
 
 inline wait {
-  c- a+RTCLOK { a?RTCLOK } !=
+  a=100 c- a+RTCLOK { a?RTCLOK } !=
 }
 
-inline draw {
+func draw {
   y=SCREEN_BLOCK {
-    a=RND n-?{ a=0x46 } else { a=0x47 }
-    (screen),y=a y--
+    a=0x46 x=RND n-?{ a=0x47 }
+    SCR: screen,y=a y--
   }!=
-  a=screen c- a+SCREEN_BLOCK screen=a c+?{ y=screen+1 y++ screen+1=y }
+  a=SCR+1 c- a+SCREEN_BLOCK SCR+1=a c+?{ SCR+2++ }
 }
 
 //-----------------------------------------------------------------------------
 
 main {
   {
-    y=SAVMSC y-- screen=y screen+1=a=SAVMSC+1
-    x=SCREEN_DIV { draw x-- }!=
-    a=100 wait
+    y=SAVMSC y-- SCR+1=y SCR+2=a=SAVMSC+1
+    counter=a=SCREEN_DIV { draw counter-- }!=
+    wait
   } always
 }
 

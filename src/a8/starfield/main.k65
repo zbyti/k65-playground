@@ -1,4 +1,4 @@
-var PCOLR0 = 0x02C0
+var SDMCTL = 0x022F, PCOLR0 = 0x02C0
 
 data stars {
   align 256
@@ -11,10 +11,10 @@ data speed {
 }
 
 main {
-  PCOLR0=a=14 GRAFM=a
+  SDMCTL=a=0x40 GRAFM=PCOLR0=a=14
   {
-    a=0 { a?VCOUNT } !=
-    x=0 {
+    { a=VCOUNT }!= x=a
+    {
       WSYNC=a
       HPOSM0=a=stars,x
       a=stars,x a+speed,x stars,x=a
