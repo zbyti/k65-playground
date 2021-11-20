@@ -1,6 +1,5 @@
+var SDMCTL=0x22F
+
 main {
-  {
-    COLPF2=a=VCOUNT
-    WSYNC=a
-  } always
+  SDMCTL=a=0 { COLBK=WSYNC=a=VCOUNT }always
 }

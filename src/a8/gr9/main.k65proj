@@ -1,6 +1,7 @@
 -system AtariXL
 -lowAddr 0x2000
--hiaddr  0x7FFF
+-hiAddr  0x7FFF
+-intro
 
 ../../../include/a8_defs.k65    main
 main.k65                        main

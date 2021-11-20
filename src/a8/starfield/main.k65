@@ -11,12 +11,11 @@ data speed {
 }
 
 main {
-  SDMCTL=a=0x40 GRAFM=PCOLR0=a=14
+  SDMCTL=a=0 GRAFM=PCOLR0=a=14
   {
     { a=VCOUNT }!= x=a
     {
-      WSYNC=a
-      HPOSM0=a=stars,x
+      HPOSM0=WSYNC=a=stars,x
       a=stars,x a+speed,x stars,x=a
       x++
     } !=

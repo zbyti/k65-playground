@@ -1,6 +1,5 @@
 -system AtariXL
--lowAddr 0x2000
--hiaddr  0xBFFF
+-intro
 
 inc/registers.k65               main
 inc/os.k65                      main

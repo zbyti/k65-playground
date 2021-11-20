@@ -1,10 +1,10 @@
-var rtclok=0x14
+var RTCLOK=0x14, SDMCTL=0x22F
 
 inline doRainbow {
-  a=rtclok c- a+VCOUNT a<<
-  WSYNC=COLPF2=COLBK=a
+  a=RTCLOK c- a+VCOUNT a<< COLBK=WSYNC=a
 }
 
 main {
-  { doRainbow } always
+  SDMCTL=a=0
+  { doRainbow }always
 }
