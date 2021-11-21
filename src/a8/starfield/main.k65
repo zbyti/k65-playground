@@ -14,10 +14,6 @@ main {
   SDMCTL=a=0 GRAFM=PCOLR0=a=14
   {
     { a=VCOUNT }!= x=a
-    {
-      HPOSM0=WSYNC=a=stars,x
-      a=stars,x a+speed,x stars,x=a
-      x++
-    } !=
+    { HPOSM0=WSYNC=a=stars,x a+speed,x stars,x=a x++ }!=
   } always
 }
