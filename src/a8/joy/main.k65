@@ -1,0 +1,116 @@
+//-----------------------------------------------------------------------------
+
+[
+  SCREEN_X_SIZE   = 40
+  SCREEN_Y_SIZE   = 24
+  FIGHTER_X_SIZE  = 7
+  FIGHTER_Y_SIZE  = 4
+
+  FIGHTER_MIN_X   = 0
+  FIGHTER_MAX_X   = SCREEN_X_SIZE - FIGHTER_X_SIZE
+  FIGHTER_MIN_Y   = 0
+  FIGHTER_MAX_Y   = SCREEN_Y_SIZE - FIGHTER_Y_SIZE
+]
+
+//-----------------------------------------------------------------------------
+
+var RTCLOK=0x14, SAVMSC=0x58
+
+//-----------------------------------------------------------------------------
+
+var fighter_pos[2]=0x80, tmp[2], iter, fighter_pos_x, fighter_pos_y
+
+//-----------------------------------------------------------------------------
+
+inline pause {
+  a=RTCLOK { a?RTCLOK } ==
+}
+
+//-----------------------------------------------------------------------------
+
+func draw_fighter {
+  tmp=a=fighter_pos tmp+1=a=fighter_pos+1
+
+  x=0 iter=a=FIGHTER_Y_SIZE {
+
+    y=[FIGHTER_X_SIZE-1] {
+      (tmp),y=a=figter_gfx,x
+      x++ y--
+    }>=0
+
+    a=tmp c- a+SCREEN_X_SIZE tmp=a c+?{ tmp+1++ }
+    iter--
+  }!=
+}
+
+//-----------------------------------------------------------------------------
+
+func move_up {
+  a=fighter_pos_y a?FIGHTER_MIN_Y !={
+    a=fighter_pos c+ a-SCREEN_X_SIZE fighter_pos=a c-?{ fighter_pos+1-- }
+    fighter_pos_y--
+  }
+}
+
+func move_down {
+  a=fighter_pos_y a?FIGHTER_MAX_Y !={
+    a=fighter_pos c- a+SCREEN_X_SIZE fighter_pos=a c+?{ fighter_pos+1++ }
+    fighter_pos_y++
+  }
+}
+
+func move_right {
+  a=fighter_pos_x a?FIGHTER_MAX_X !={
+    a=fighter_pos c- a+1 fighter_pos=a c+?{ fighter_pos+1++ }
+    fighter_pos_x++
+  }
+}
+
+func move_left {
+  a=fighter_pos_x a?FIGHTER_MIN_X !={
+    a=fighter_pos c+ a-1 fighter_pos=a c-?{ fighter_pos+1-- }
+    fighter_pos_x--
+  }
+}
+
+//-----------------------------------------------------------------------------
+
+func joy_check {
+  a=PORTA a^0xFF a&0b1111
+  z-?{
+    c-
+    a>> c+?{ a!! move_up    a?? }
+    a>> c+?{ a!! move_down  a?? }
+    a>> c+?{ a!! move_left  a?? }
+    a>> c+?{ a!! move_right a?? }
+  }
+}
+
+//-----------------------------------------------------------------------------
+
+main {
+  fighter_pos=a=SAVMSC fighter_pos+1=a=SAVMSC+1
+  fighter_pos_x=a=FIGHTER_MIN_X fighter_pos_y=a=FIGHTER_MIN_Y
+  draw_fighter
+
+  {
+    pause
+
+    a=RTCLOK a&1 =={
+      joy_check draw_fighter
+    }
+
+  } always
+}
+
+//-----------------------------------------------------------------------------
+
+data figter_gfx {
+  align 256
+  0x00 0x00 0x00 0x00 0x00 0x00 0x00
+  0x00 0x00 0x00 0x55 0x00 0x4A 0x00
+  0x00 0x7F 0x80 0xD2 0x80 0xC4 0x00
+  0x00 0x00 0x00 0x00 0x00 0x00 0x00
+}
+
+//-----------------------------------------------------------------------------
