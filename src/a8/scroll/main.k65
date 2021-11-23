@@ -1,0 +1,65 @@
+//-----------------------------------------------------------------------------
+
+[
+  HSCROL_START  = 0xF
+  HSCROL_END    = HSCROL_START - 4
+  SCROLL_OFFSET = 0x30
+]
+
+//-----------------------------------------------------------------------------
+
+var RTCLOK=0x14, SDLSTL=0x230, SDLSTH=0x231
+
+//-----------------------------------------------------------------------------
+
+var hscroll_i=0x80, screen=0x6000
+
+//-----------------------------------------------------------------------------
+
+inline pause {
+  a=RTCLOK { a?RTCLOK } ==
+}
+
+//-----------------------------------------------------------------------------
+
+main {
+  SDLSTL=a=&<dl SDLSTH=a=&>dl
+  hscroll_i=a=HSCROL_START x=0
+
+  {
+    a=hscroll_i a?HSCROL_END =={
+
+      a=RANDOM a&15 c- a+33
+
+      screen,x=screen+SCROLL_OFFSET,x=a
+      screen+0x100,x=screen+[0x100+SCROLL_OFFSET],x=a
+      screen+0x200,x=screen+[0x200+SCROLL_OFFSET],x=a
+
+      LMS1++ LMS2++ LMS3++ x++
+
+      x?SCROLL_OFFSET =={
+        x=0 a=x LMS1=LMS2=LMS3=a
+      }
+
+      hscroll_i=a=HSCROL_START
+
+    }
+
+    HSCROL=a=hscroll_i hscroll_i--
+
+    pause
+
+  } always
+}
+
+//-----------------------------------------------------------------------------
+
+data dl {
+  nocross
+  0x70 0x70 0x70
+  0x52 LMS1: &<screen &>screen
+  0x52 LMS2: &<screen &>screen+0x100
+  0x52 LMS3: &<screen &>screen+0x200
+}
+
+//-----------------------------------------------------------------------------
