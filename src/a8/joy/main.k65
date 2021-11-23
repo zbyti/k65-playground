@@ -34,7 +34,7 @@ func draw_fighter {
   x=0 iter=a=FIGHTER_Y_SIZE {
 
     y=[FIGHTER_X_SIZE-1] {
-      (tmp),y=a=figter_gfx,x
+      (tmp),y=a=fighter_gfx,x
       x++ y--
     }>=0
 
@@ -105,7 +105,7 @@ main {
 
 //-----------------------------------------------------------------------------
 
-data figter_gfx {
+data fighter_gfx {
   align 256
   0x00 0x00 0x00 0x00 0x00 0x00 0x00
   0x00 0x00 0x00 0x55 0x00 0x4A 0x00
