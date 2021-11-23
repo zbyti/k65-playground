@@ -18,7 +18,7 @@ var RTCLOK=0x14, SAVMSC=0x58
 
 //-----------------------------------------------------------------------------
 
-var fighter_pos[2]=0x80, tmp[2], iter, fighter_pos_x, fighter_pos_y
+var fighter_pos[2]=0x80, tmp[2], iter, joy_dir, fighter_pos_x, fighter_pos_y
 
 //-----------------------------------------------------------------------------
 
@@ -76,12 +76,12 @@ func move_left {
 //-----------------------------------------------------------------------------
 
 func joy_check {
-  a=PORTA a^0xFF a&0b1111
+  a=PORTA a^0xFF a&0b1111 joy_dir=a
   z-?{
-    a>> c+?{ a!! move_up    a?? }
-    a>> c+?{ a!! move_down  a?? }
-    a>> c+?{ a!! move_left  a?? }
-    a>> c+?{ a!! move_right a?? }
+    joy_dir>> c+?{ move_up    }
+    joy_dir>> c+?{ move_down  }
+    joy_dir>> c+?{ move_left  }
+    joy_dir>> c+?{ move_right }
   }
 }
 
