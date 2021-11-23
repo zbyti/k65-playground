@@ -78,7 +78,6 @@ func move_left {
 func joy_check {
   a=PORTA a^0xFF a&0b1111
   z-?{
-    c-
     a>> c+?{ a!! move_up    a?? }
     a>> c+?{ a!! move_down  a?? }
     a>> c+?{ a!! move_left  a?? }
