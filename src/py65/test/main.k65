@@ -1,27 +1,16 @@
+[
+  NEW_LINE = 0x0A
+]
+
 var output=0xF001, input=0xF004
 
-var dl=0x1000, screen=0x2000
-
 main {
-  address 0x0200
+  x=0xFF { x++ output=a=hello,x }!=
+}
 
-  a=&<screen a!! y=&>screen
+// ["] 0x22 don't have a proper match [~] is used as a placeholder
+data text {
+  charset "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ !~#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}"
 
-  dl=dl+1=dl+2=a=0x70
-
-  x=0 {
-
-    dl+3,x=a=0x44 a?? dl+4,x=a a!! dl+5,x=a=y
-
-    a=x a&1 z-?{
-      c- a+2 dl+5,x=a
-      a?? a+40 a!! c+?{ y++ }
-    }
-
-    x++ x++ x++ x?72
-  } !=
-
-  dl+75=a=0x41 dl+76=a=&<dl dl+77=a=&>dl
-
-  a??
+  hello: "Hello .... Py65!" NEW_LINE "and K65 :]" 0
 }
