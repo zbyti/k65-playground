@@ -3,7 +3,7 @@
 [
   HSCROL_START  = 0xF
   HSCROL_END    = HSCROL_START - 4
-  SCROLL_OFFSET = 0x30
+  SCROLL_OFFSET = 40 + 1
 ]
 
 //-----------------------------------------------------------------------------
