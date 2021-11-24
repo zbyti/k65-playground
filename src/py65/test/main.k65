@@ -1,16 +1,35 @@
+//-----------------------------------------------------------------------------
+
 [
   NEW_LINE = 0x0A
+  ESC      = 0x1B
 ]
 
+/*
+  RESET_TERMINAL => ESC "c"
+  HOME           => ESC "[H"
+  CLEAR          => ESC "[2J"
+  HOME_AND_CLEAR => ESC "[H" ESC "[JP"
+*/
+
+//-----------------------------------------------------------------------------
+
 var output=0xF001, input=0xF004
+
+//-----------------------------------------------------------------------------
 
 main {
   x=0xFF { x++ output=a=hello,x }!=
 }
 
-// ["] 0x22 don't have a proper match [~] is used as a placeholder
+//-----------------------------------------------------------------------------
+
 data text {
+  // ["] 0x22 don't have a proper match [~] is used as a placeholder
   charset "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ !~#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}"
 
-  hello: "Hello .... Py65!" NEW_LINE "and K65 :]" 0
+  hello:
+
+  ESC "[H" ESC "[JP"
+  "Hello .... Py65!" NEW_LINE "and K65 :]" 0
 }
