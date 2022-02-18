@@ -5,4 +5,4 @@ main.k65                        main
 -o main.prg
 
 -link
-!xvic main.prg
+!vic20 main.prg

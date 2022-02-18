@@ -1,0 +1,60 @@
+/*
+winner of the Lovebyte 2022, oldskool, 128B.
+without undocumented codes & relocated above ZERO Page.
+
+https://www.pouet.net/prod.php?which=91099
+*/
+
+var RTCLOK2=0x14
+var ROWCRS=0x54, COLCRS=0x55
+
+var tmp=0x80
+
+var PCOLR0=0x02C0
+var COLOR0=0x02C4
+
+var COLPF1=0xD017, COLPF2=0xD018
+var VCOUNT=0xD40B
+
+var SOP=0xEF90
+var SPB=0xF1A4
+
+main {
+  //gfx mode E
+  a=0x0F call SOP
+
+  //draw highways
+  {
+    a=ROWCRS x=a a+COLCRS
+
+    tmp=a a&1 hc_centre=a
+
+    y=a a=x a&8 !={ hc_centre=a=5 } a=x a-COLCRS
+
+    a!! a&tmp a>> a>> a>> a>> a>> c- a-1 a?? c-?{ a=tmp } a>> a&0x1F a>>
+
+    x=a a=y PCOLR0,x=a a=highway_collors,x
+    a?5 !={
+      y?1 !={ a=y } 
+    }
+
+    call SPB
+
+    a=y
+  } n-?
+
+  COLOR0++ y=2
+
+  //animate city traffic
+  {
+    a=VCOUNT
+    x=a a-RTCLOK2 a&0x2F a-0x2C a=y c+?{ a=0x1C } COLPF1=a
+    a=x a+RTCLOK2 a&0x1F a-0x1C a=y c+?{ a=0x16 } COLPF2=a
+  } v-?
+}
+
+data highway_collors {
+             5 1 1 2 1 1
+  hc_centre: 1 1
+             1 1 3 1 1 5
+}

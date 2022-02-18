@@ -1,4 +1,5 @@
 -system AtariXL16cart
+-intro
 
 ../../../include/a8_defs.k65    main
 main.k65                        main
