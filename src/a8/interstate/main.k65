@@ -6,14 +6,14 @@ https://www.pouet.net/prod.php?which=91099
 */
 
 var RTCLOK2=0x14
-var ROWCRS=0x54, COLCRS=0x55
+var ROWCRS=0x54, COLCRS
 
 var tmp=0x80
 
 var PCOLR0=0x02C0
 var COLOR0=0x02C4
 
-var COLPF1=0xD017, COLPF2=0xD018
+var COLPF1=0xD017, COLPF2
 var VCOUNT=0xD40B
 
 var SOP=0xEF90
