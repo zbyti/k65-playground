@@ -29,7 +29,7 @@ var WSYNC     = 0xD40A, VCOUNT
 
 //OS
 var RTCLOK2   = 0x14
-var DMA       = 0x22F
+var SDMCTL    = 0x22F
 
 //custom variables
 var positions = 0x3000
@@ -86,6 +86,6 @@ inline putmsl {
 //-----------------------------------------------------------------------------
 
 main {
-  DMA=x=0 makesine GRACTL=a=3 fillrnd
+  SDMCTL=x=0 makesine GRACTL=a=0b11 fillrnd
   { wait putmsl } ==
 }
