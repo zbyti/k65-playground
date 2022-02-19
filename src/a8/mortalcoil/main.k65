@@ -1,0 +1,91 @@
+/*
+
+Mortal Coil, for Outline 2k17, 128 bytes compo
+Kind of rotating starfield using one missile and DMA off!
+
+Credits to 'White Flame' for describing sine wave generation, found here:
+http://codebase64.org/doku.php?id=base:generating_approximate_sines_in_assembly
+
+F#READY, May 2017
+
+-----------------
+
+translated by zbyti without annoying sound ;)
+
+-----------------
+
+*/
+
+//GTIA
+var HPOSM0    = 0xD004
+var GRAFM     = 0xD011, COLPM0
+var GRACTL    = 0xD01D
+
+//POKEY
+var RANDOM    = 0xD20A
+
+//ANTIC
+var WSYNC     = 0xD40A, VCOUNT
+
+//OS
+var RTCLOK2   = 0x14
+var DMA       = 0x22F
+
+//custom variables
+var positions	= 0x3000
+var colors		= 0x3100
+var sinewave	= 0x3200
+
+var temp		  = 0x80
+
+//-----------------------------------------------------------------------------
+
+inline wait {
+  { a=VCOUNT } !=
+}
+
+//-----------------------------------------------------------------------------
+
+inline makesine {
+  y=0x3F
+  {
+    c-
+    .value_lo: a=0 .delta_lo: a+0 .value_lo+1=a
+    .value_hi: a=0 .delta_hi: a+0 .value_hi+1=a
+
+    sinewave+0xC0,x=sinewave+0x80,y=a 
+    a^0x7F
+    sinewave+0x40,x=sinewave+0x00,y=a
+
+    a=.delta_lo+1 a+8 .delta_lo+1=a c+?{ .delta_hi+1++ }
+    
+    x++ y--
+  } >=0
+}
+
+//-----------------------------------------------------------------------------
+
+inline fillrnd {
+  { a=RANDOM positions,y=colors,y=a y-- } !=
+}
+
+//-----------------------------------------------------------------------------
+
+inline putmsl {
+  x=RTCLOK2 y=254
+  {
+    a=positions,x positions,x++ temp=x x=a
+    a=sinewave,x c- x=temp a+sinewave,x a>> a+0x40
+
+    HPOSM0=WSYNC=a a=colors,x COLPM0=a
+
+    x++ y--      
+  } !=
+}
+
+//-----------------------------------------------------------------------------
+
+main {
+  DMA=x=0 makesine GRACTL=a=3 fillrnd
+  { wait putmsl } ==
+}
