@@ -20,7 +20,7 @@ inline wait {
 
 func draw {
   y=SCREEN_BLOCK {
-    a=0x46 x=RND n-?{ a=0x47 }
+    a=RND a&1 a|0x46
     SCR: screen,y=a y--
   }!=
   a=SCR+1 c- a+SCREEN_BLOCK SCR+1=a c+?{ SCR+2++ }
