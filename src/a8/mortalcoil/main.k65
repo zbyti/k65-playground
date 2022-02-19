@@ -32,9 +32,9 @@ var RTCLOK2   = 0x14
 var DMA       = 0x22F
 
 //custom variables
-var positions	= 0x3000
+var positions = 0x3000
 var colors    = 0x3100
-var sinewave	= 0x3200
+var sinewave  = 0x3200
 
 var temp      = 0x80
 
