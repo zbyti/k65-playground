@@ -9,7 +9,6 @@
   RESET_TERMINAL => ESC "c"
   HOME           => ESC "[H"
   CLEAR          => ESC "[2J"
-  HOME_AND_CLEAR => ESC "[H" ESC "[JP"
 */
 
 //-----------------------------------------------------------------------------
@@ -30,6 +29,6 @@ data text {
 
   hello:
 
-  ESC "[H" ESC "[JP"
+  ESC "[H" ESC "[2J"
   "Hello .... Py65!" NEW_LINE "and K65 :]" 0
 }
