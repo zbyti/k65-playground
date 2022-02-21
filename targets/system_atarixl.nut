@@ -1,7 +1,7 @@
 
 output_file_name <- "program.xex"
 low_addr <- 0x2000
-high_addr <- 0xBFFF
+high_addr <- 0x9FFF
 intro_mode <- 0
 
 function opt_lowaddr(cmd)
