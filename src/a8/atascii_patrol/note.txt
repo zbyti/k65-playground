@@ -1,0 +1,7 @@
+dd if=BIT5.MPT of=bit5.bin bs=1 skip=6
+exomizer sfx sys -n -t 168 -o atascii_patrol.xex game.xex
+
+
+--- NOTES ---
+
+zrób LMS co wiersz (tam gdzie samolot) LMS co 40 tak by nie trzeba było sprawdzać czy zwiększyć HI_BYTE

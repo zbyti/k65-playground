@@ -1,0 +1,22 @@
+/* vars for draw */
+var scroll_i=0x80
+
+var arm_fighter_pos_top[2]=0x8A, arm_fighter_pos_bot[2], arm_fighter_pos_x, arm_fighter_pos_y
+
+var joy_dir=0xA0
+
+/* vars for tools/mul8x8 */
+var prodL=0xE0, prodH, factor1=0xE0, factor2
+
+var stars_pos=[STARS_POS_ADR], stars_spd=[STARS_SPD_ADR]
+
+var chars=[CHARSET_ADR], os_chars=0xE000
+
+var screen=[SCREEN_ADR],
+    s_score=[SCREEN_SCORE],
+    s_1st_air=[SCREEN_1ST_AIR_ADR],
+    s_2st_air=[SCREEN_2ST_AIR_ADR],
+    s_3st_air=[SCREEN_3ST_AIR_ADR],
+    s_1st_ground=[SCREEN_1ST_GR_ADR],
+    s_2st_ground=[SCREEN_2ST_GR_ADR],
+    s_last_row=[SCREEN_LAST_ROW_ADR]

@@ -1,0 +1,78 @@
+[
+  RTI_OPCODE          = 0x40
+  JMP_OPCODE          = 0x4C
+
+  DMA_ON              = 0x22
+  DMA_OFF             = 0
+  NMI_OFF             = 0
+  NMI_ON_VBI          = 0x40
+  NMI_ON_VBI_DLI      = 0xC0
+
+  JOY_UP              = 1
+  JOY_DOWN            = 2
+  JOY_LEFT            = 4
+  JOY_RIGHT           = 8
+
+  LV_HARD             = 7
+  LV_MID              = 15
+
+  COL_AIR             = 0xC0
+  LUM_AIR             = 0x0E
+  LUM_GROUND          = 0x08
+  COL_BAK             = 0
+
+  CH_EMPTY            = 0
+  CH_HOLE_R           = 0x48
+  CH_HOLE_L           = 0x4A
+  CH_MINE             = 0x55
+  CH_FILLED           = 0x80
+
+  CH_TANK_CHASSIS     = 0x0A
+  CH_TANK_BARREL      = 0x4E
+  CH_TANK_TURRET      = 0x55
+  CH_TANK_ARMOR       = 0x55
+  CH_TANK_ANTENNA     = 0x56
+
+  CH_TRUCK_FRONT      = 0x42
+  CH_TRUCK_CHASSIS    = 0x54
+  CH_TRUCK_THIN_ROOF  = 0x3F
+  CH_TRUCK_ROOF       = 0x4E
+  CH_TRUCK_FLOOR      = 0x55
+  CH_TRUCK_ANTENNA    = 0x56
+
+  MUS_ADR             = 0xA000
+  PLA_ADR             = 0xB000
+
+  SCROLL_OFFSET       = 48
+  SCROLL_BUFF         = 8
+
+  SCREEN_ROWS_COUNT   = 16
+  SCREEN_ROW_SIZE     = 40
+  SCREEN_SIZE         = SCREEN_ROWS_COUNT * SCREEN_ROW_SIZE
+  SCREEN_BLOCK        = SCREEN_SIZE / 4
+
+  CHARSET_ADR         = 0xBC00
+
+  SCREEN_ADR          = 0xFC00
+  SCREEN_1ST_AIR_ADR  = SCREEN_ADR - 0x500 + SCROLL_BUFF
+  SCREEN_2ST_AIR_ADR  = SCREEN_ADR - 0x400 + SCROLL_BUFF
+  SCREEN_3ST_AIR_ADR  = SCREEN_ADR - 0x300 + SCROLL_BUFF
+  SCREEN_1ST_GR_ADR   = SCREEN_ADR - 0x200 + SCROLL_BUFF
+  SCREEN_2ST_GR_ADR   = SCREEN_ADR - 0x100 + SCROLL_BUFF
+  SCREEN_LAST_ROW_ADR = SCREEN_ADR + SCREEN_SIZE
+  SCREEN_SCORE        = SCREEN_LAST_ROW_ADR + SCREEN_ROW_SIZE
+
+  STARS_POS_ADR       = 0x0200
+  STARS_SPD_ADR       = 0x0300
+  STARS_START         = 0x18
+  STARS_END           = 0xA8
+
+  ARM_FIGHT_POS_X     = 4
+  ARM_FIGHT_POS_Y     = 4
+  ARM_FIGHT_POS_MIN_X = 1
+  ARM_FIGHT_POS_MAX_X = 30
+  ARM_FIGHT_POS_MIN_Y = 1
+  ARM_FIGHT_POS_MAX_Y = 12
+
+  ARMORED_CARRIER_X   = 4
+]

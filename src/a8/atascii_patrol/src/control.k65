@@ -1,0 +1,53 @@
+func arm_fighter_up {
+  a=arm_fighter_pos_y a?ARM_FIGHT_POS_MIN_Y
+  !={
+    a=arm_fighter_pos_top
+    c+ a-SCREEN_ROW_SIZE arm_fighter_pos_top=a c-?{ arm_fighter_pos_top+1-- }
+    a=arm_fighter_pos_bot
+    c+ a-SCREEN_ROW_SIZE arm_fighter_pos_bot=a c-?{ arm_fighter_pos_bot+1-- }
+    arm_fighter_pos_y--
+  }
+}
+
+func arm_fighter_down {
+  a=arm_fighter_pos_y a?ARM_FIGHT_POS_MAX_Y
+  !={
+    a=arm_fighter_pos_top
+    c- a+SCREEN_ROW_SIZE arm_fighter_pos_top=a c+?{ arm_fighter_pos_top+1++ }
+    a=arm_fighter_pos_bot
+    c- a+SCREEN_ROW_SIZE arm_fighter_pos_bot=a c+?{ arm_fighter_pos_bot+1++ }
+    arm_fighter_pos_y++
+  }
+}
+
+func arm_fighter_left {
+  a=arm_fighter_pos_x a?ARM_FIGHT_POS_MIN_X
+  !={
+    a=arm_fighter_pos_top c+ a-1 arm_fighter_pos_top=a c-?{ arm_fighter_pos_top+1-- }
+    a=arm_fighter_pos_bot c+ a-1 arm_fighter_pos_bot=a c-?{ arm_fighter_pos_bot+1-- }
+    arm_fighter_pos_x--
+  }
+}
+
+func arm_fighter_right {
+  a=arm_fighter_pos_x a?ARM_FIGHT_POS_MAX_X
+  !={
+    a=arm_fighter_pos_top c- a+1 arm_fighter_pos_top=a c+?{ arm_fighter_pos_top+1++ }
+    a=arm_fighter_pos_bot c- a+1 arm_fighter_pos_bot=a c+?{ arm_fighter_pos_bot+1++ }
+    arm_fighter_pos_x++
+  }
+}
+
+func joy_check {
+  a=PORTA a^0xFF a&0b1111 joy_dir=a
+  z-?{
+    clear_lunar_armored_fighter
+
+    joy_dir>> c+?{ arm_fighter_up    } //up    1
+    joy_dir>> c+?{ arm_fighter_down  } //down  2
+    joy_dir>> c+?{ arm_fighter_left  } //left  4
+    joy_dir>> c+?{ arm_fighter_right } //right 8
+
+    draw_lunar_armored_fighter
+  }
+}

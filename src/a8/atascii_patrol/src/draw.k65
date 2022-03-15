@@ -1,0 +1,186 @@
+func clear_screen {
+  x=40 {
+    s_score-1,x=a=CH_EMPTY
+    s_last_row-1,x=a=CH_FILLED
+    x--
+  }!=
+
+  {
+    s_1st_ground,x=s_2st_ground,x=a=CH_FILLED
+    s_1st_air,x=s_2st_air,x=s_3st_air,x=a=CH_EMPTY
+    x++
+  }!=
+
+  {
+    screen,x=a=CH_EMPTY
+    screen+[SCREEN_BLOCK*1],x=a
+    screen+[SCREEN_BLOCK*2],x=a
+    screen+[SCREEN_BLOCK*3],x=a
+    x++ x?SCREEN_BLOCK
+  }!=
+}
+
+func draw_lunar_armored_fighter {
+  y=2 {
+    (arm_fighter_pos_top),y=a=laf_gfx_top,y
+    y--
+  }>=0
+
+  y=4 {
+    (arm_fighter_pos_bot),y=a=laf_gfx_bot,y
+    y--
+  }>=0
+}
+
+func clear_lunar_armored_fighter {
+  y=2 {
+    (arm_fighter_pos_top),y=a=CH_EMPTY
+    y--
+  }>=0
+
+  y=4 {
+    (arm_fighter_pos_bot),y=a
+    y--
+  }>=0
+}
+
+func draw_lunar_armored_carrier {
+  y=scroll_i
+  x=4 {
+    s_1st_air+ARMORED_CARRIER_X,y=a=lac_gfx_top,x
+    s_2st_air+ARMORED_CARRIER_X,y=a=lac_gfx_mid,x
+    s_3st_air+ARMORED_CARRIER_X,y=a=lac_gfx_bot,x
+    y++ x--
+  }>=0
+}
+
+func draw_tank {
+  s_3st_air-3,x=s_3st_air+[SCROLL_OFFSET-3],x=a=CH_TANK_CHASSIS
+  s_2st_air-3,x=s_2st_air+[SCROLL_OFFSET-3],x=a=CH_TANK_ARMOR
+  s_1st_air-3,x=s_1st_air+[SCROLL_OFFSET-3],x=a=CH_TANK_BARREL
+
+  s_3st_air-2,x=s_3st_air+[SCROLL_OFFSET-2],x=a=CH_TANK_CHASSIS
+  s_2st_air-2,x=s_2st_air+[SCROLL_OFFSET-2],x=a=CH_FILLED
+  s_1st_air-2,x=s_1st_air+[SCROLL_OFFSET-2],x=a=CH_TANK_TURRET
+
+  s_3st_air-1,x=s_3st_air+[SCROLL_OFFSET-1],x=a=CH_TANK_CHASSIS
+  s_2st_air-1,x=s_2st_air+[SCROLL_OFFSET-1],x=a=CH_TANK_ARMOR
+  s_1st_air-1,x=s_1st_air+[SCROLL_OFFSET-1],x=a=CH_TANK_ANTENNA
+}
+
+func draw_truck {
+  s_2st_air-5,x=s_2st_air+[SCROLL_OFFSET-5],x=a=CH_TRUCK_FRONT
+
+  s_3st_air-4,x=s_3st_air+[SCROLL_OFFSET-4],x=a=CH_TRUCK_CHASSIS
+  s_2st_air-4,x=s_2st_air+[SCROLL_OFFSET-4],x=a=CH_TRUCK_FLOOR
+  s_1st_air-4,x=s_1st_air+[SCROLL_OFFSET-4],x=a=CH_TRUCK_THIN_ROOF
+
+  s_3st_air-3,x=s_3st_air+[SCROLL_OFFSET-3],x=a=CH_TRUCK_CHASSIS
+  s_2st_air-3,x=s_2st_air+[SCROLL_OFFSET-3],x=a=CH_FILLED
+  s_1st_air-3,x=s_1st_air+[SCROLL_OFFSET-3],x=a=CH_TRUCK_ROOF
+
+  s_3st_air-2,x=s_3st_air+[SCROLL_OFFSET-2],x=a=CH_TRUCK_CHASSIS
+  s_2st_air-2,x=s_2st_air+[SCROLL_OFFSET-2],x=a=CH_TRUCK_FLOOR
+
+  s_2st_air-1,x=s_2st_air+[SCROLL_OFFSET-1],x=a=CH_TRUCK_ANTENNA
+}
+
+func draw_hole {
+  s_1st_ground-4,x=s_1st_ground+[SCROLL_OFFSET-4],x=a=CH_HOLE_L
+  s_2st_ground-3,x=s_2st_ground+[SCROLL_OFFSET-3],x=a
+
+  s_1st_ground-3,x=s_1st_ground+[SCROLL_OFFSET-3],x=a=CH_EMPTY
+  s_1st_ground-2,x=s_1st_ground+[SCROLL_OFFSET-2],x=a
+
+  s_1st_ground-1,x=s_1st_ground+[SCROLL_OFFSET-1],x=a=CH_HOLE_R
+  s_2st_ground-2,x=s_2st_ground+[SCROLL_OFFSET-2],x=a
+}
+
+inline draw_military_obstacles {
+  c+ a=RANDOM a&3
+
+  =={ s_3st_air-1,x=s_3st_air+[SCROLL_OFFSET-1],x=a=CH_MINE }
+  a-2 =={ draw_tank }
+  a-1 =={ draw_truck }
+}
+
+func place_obstacles {
+    a=RANDOM a&3 =={ draw_hole } else { draw_military_obstacles }
+}
+
+func draw_and_scroll {
+  x=scroll_i
+
+  a=CH_FILLED
+  s_1st_ground-1,x=s_1st_ground+[SCROLL_OFFSET-1],x=a
+  s_2st_ground-1,x=s_2st_ground+[SCROLL_OFFSET-1],x=a
+
+  a=CH_EMPTY
+  s_1st_air-1,x=s_1st_air+[SCROLL_OFFSET-1],x=a
+  s_2st_air-1,x=s_2st_air+[SCROLL_OFFSET-1],x=a
+  s_3st_air-1,x=s_3st_air+[SCROLL_OFFSET-1],x=a
+
+  a=x a&LV_MID =={ place_obstacles }
+
+  draw_lunar_armored_carrier
+
+  x=scroll_i x?SCROLL_OFFSET =={
+    scroll_i=a=0 draw_lunar_armored_carrier
+    lms_ground_1=lms_ground_2=lms_air_1=lms_air_2=lms_air_3=a=SCROLL_BUFF
+  }
+
+  lms_ground_1++ lms_ground_2++
+  lms_air_1++ lms_air_2++ lms_air_3++
+
+  scroll_i++
+}
+
+inline animate_stars {
+  { a=VCOUNT a?STARS_START }!= x=a
+
+  GRAFM=a=1
+  {
+    HPOSM0=WSYNC=a=stars_pos,x c+ a-stars_spd,x stars_pos,x=a
+    COLPM0=a=RANDOM
+    x++ x?STARS_END
+  } !=
+  GRAFM=a=0
+}
+
+/* podstawowe kolory */
+inline set_world_colors {
+  COLPF1=a=LUM_AIR COLPF2=a=COL_AIR COLBK=a=COL_BAK
+}
+
+/* inicjalizujemy świat gry */
+func init_world {
+  pause DMACTL=a=DMA_OFF
+
+  set_world_colors
+
+  scroll_i=a=0
+
+  arm_fighter_pos_x=a=ARM_FIGHT_POS_X
+  arm_fighter_pos_y=a=ARM_FIGHT_POS_Y
+
+  arm_fighter_pos_top=a=&<screen+[ARM_FIGHT_POS_X + ARM_FIGHT_POS_Y * SCREEN_ROW_SIZE]
+  arm_fighter_pos_top+1=a=&>screen+[ARM_FIGHT_POS_X + ARM_FIGHT_POS_Y * SCREEN_ROW_SIZE]
+  arm_fighter_pos_bot=a=&<screen+[ARM_FIGHT_POS_X + (ARM_FIGHT_POS_Y + 1) * SCREEN_ROW_SIZE]
+  arm_fighter_pos_bot+1=a=&>screen+[ARM_FIGHT_POS_X + (ARM_FIGHT_POS_Y + 1) * SCREEN_ROW_SIZE]
+
+  CHBASE=a=&>chars
+  DLISTL=a=&<world_dl DLISTH=a=&>world_dl
+
+  //inicjalizujemy tablice dla gwiazd
+  x=0 c- { stars_pos,x=a=RANDOM a&3 a+1 stars_spd,x=a x++ }!=
+
+  clear_screen
+
+  pause
+
+  VDSLST=a=JMP_OPCODE VDSLST+1=a=&<dli_ground VDSLST+2=a=&>dli_ground
+  NMIEN=a=NMI_ON_VBI_DLI
+
+  DMACTL=a=DMA_ON
+}
+

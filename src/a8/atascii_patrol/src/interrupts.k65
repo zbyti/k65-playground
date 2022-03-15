@@ -1,0 +1,56 @@
+/* szablon przerwania DLI */
+naked dli {
+  a!!
+
+  COLBK=a=RANDOM
+
+  //VDSLST+1=a=&<dli2 VDSLST+2=a=&>dli2
+
+  a??
+  return_i
+}
+
+naked dli_air {
+  a!!
+
+  COLPF1=WSYNC=a=LUM_AIR
+
+  VDSLST+1=a=&<dli_ground VDSLST+2=a=&>dli_ground
+
+  a??
+  return_i
+}
+
+naked dli_ground {
+  a!!
+
+  COLPF1=WSYNC=a=LUM_GROUND
+
+  VDSLST+1=a=&<dli_air VDSLST+2=a=&>dli_air
+
+  a??
+  return_i
+}
+
+/* ciało VBI */
+inline vbi {
+  play_music
+
+  a=RTCLOK
+
+  a&1 !={
+    draw_and_scroll
+  }
+
+  a&3 =={
+    joy_check
+  }
+}
+
+/* własna obsługa przerwań niemaskowalnych */
+naked nmi {
+  a&?NMIST n+?{ VDSLST: goto dli }
+  RTCLOK++
+  phr vbi plr
+  return_i
+}

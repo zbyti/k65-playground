@@ -1,0 +1,16 @@
+inline init_music {
+  a=0 x=&>music y=&<music call player
+  a=4 x=0 y=0 call player
+}
+
+inline play_music { call player+3 }
+
+data music {
+  address [MUS_ADR]
+  binary "data/bitter_reality_5.bin"
+}
+
+data player {
+  address [PLA_ADR]
+  binary "data/mpt_player.bin"
+}

@@ -1,0 +1,20 @@
+-system AtariXL
+-lowAddr 0x2000
+-hiAddr 0xBFFF
+
+src/const.k65                   main
+src/registers.k65               main
+src/globals.k65                 main
+src/binary.k65                  main
+src/tools.k65                   main
+src/draw.k65                    main
+src/control.k65                 main
+src/music.k65                   main
+src/interrupts.k65              main
+src/kernel.k65                  main
+main.k65                        main
+
+-o /dev/shm/main.xex
+
+-link
+!atari800 /dev/shm/main.xex

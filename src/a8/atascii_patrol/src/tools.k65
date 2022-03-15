@@ -1,0 +1,65 @@
+/*
+  odczekanie do przerwania VBI
+*/
+inline pause {
+  a=RTCLOK { a?RTCLOK } ==
+}
+
+/*
+  odczekanie określonej ilości ramek
+  ustaw: a
+*/
+func wait {
+  c- a+RTCLOK { a?RTCLOK } !=
+}
+inline wait1s { a=50 wait }
+inline wait2s { a=100 wait }
+inline wait4s { a=200 wait }
+
+/*
+  odczekanie do określonej linii rastra
+  ustaw: a
+*/
+func rsync {
+  { a?VCOUNT } !=
+}
+
+/*
+  synchronizacja pozioma
+*/
+inline wsync { WSYNC=a }
+
+/*
+  ustawia biały kolor ramki ekranu
+*/
+inline bar_on { a=0x0E wsync COLBK=a }
+
+/*
+  ustawia czarny kolor ramki ekranu
+*/
+inline bar_off { COLBK=a=0 }
+
+/*
+  zrzucenie rejestrów na stos
+*/
+inline phr { a!! a=x a!! a=y a!! }
+
+/*
+  przywrócenie rejestrów ze stosu
+*/
+inline plr { a?? y=a a?? x=a a?? }
+
+/*
+  8x8 => 16 unsigned multiplication
+  ustaw: factor1, factor2
+  wynik: prodL, prodH
+*/
+func mul8x8 {
+  y=8 a=0 factor1>>
+  {
+    c+?{ c- a+factor2 }
+    a>>> factor1>>>
+    y--
+  } !=
+  prodH=a
+}

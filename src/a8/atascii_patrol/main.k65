@@ -1,0 +1,24 @@
+
+
+//-----------------------------------------------------------------------------
+
+/* tu przygoda się zaczyna ;) */
+main {
+  init_no_os
+  init_world
+  init_music
+
+  pause
+
+  draw_lunar_armored_fighter
+
+  {
+    animate_stars
+
+    a=RTCLOK a&1 == {
+      //draw_and_scroll
+    }
+
+  } always
+}
+

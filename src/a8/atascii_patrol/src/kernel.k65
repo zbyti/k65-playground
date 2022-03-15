@@ -1,0 +1,30 @@
+/* kopiujemy zestaw znaków przed wyłączeniem ROM */
+inline copy_charset {
+  x=0 {
+    chars,x=a=os_chars,x
+    chars+0x100,x=a=os_chars+0x100,x
+    chars+0x200,x=a=os_chars+0x200,x
+    chars+0x300,x=a=os_chars+0x300,x
+    x++
+  }!=
+}
+
+/* wyłączamy OS, przerwania IRQ itd. */
+inline init_no_os {
+  pause
+
+  i+ d-
+
+  VDSLST=a=RTI_OPCODE VDSLST+1=VDSLST+2=a=0
+
+  NMIEN=DMACTL=PORTA=PRIOR=GRACTL=AUDCTL=SKCTL=a
+  COLPF0=COLPF1=COLPF2=COLPF3=COLBK=a
+
+  copy_charset
+
+  CHACTL=a=2 SKCTL=a=3 a=PACTL a|4 PACTL=a PORTB=a=0xFE
+  s=x=0xFF
+
+  NMIVL=a=&<nmi NMIVH=a=&>nmi NMIEN=a=NMI_ON_VBI
+}
+
