@@ -20,7 +20,7 @@
 
 * Lovebyte 2021 Seminar: Sizecoding on the Atari 8 bit, by: F#READY [link1](https://www.youtube.com/watch?v=ezQuRA1FPJ0) [link2](https://github.com/FreddyOffenga/sizecoding/blob/main/presentations/Atari8bit/presentationA8.md)
 * AtariWiki Memory Map [link](https://atariwiki.org/wiki/Wiki.jsp?page=Memory%20Map)
-* Mapping The Atari [link](https://github.com/zbyti/k65-binary/commits/master)
+* Mapping The Atari [link](https://www.atariarchives.org/mapping/)
 * Atari 800 OS XL Rev2 [link](https://github.com/ilmenit/A800-OS-XL-Rev2)
 
 
