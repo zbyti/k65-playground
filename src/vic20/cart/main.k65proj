@@ -6,4 +6,4 @@ main.k65                        main
 -o main.crt
 
 -link
-!vic20 -cartA main.crt
+!flatpak run --command=xvic net.sf.VICE -cartA main.crt

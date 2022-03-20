@@ -5,4 +5,4 @@ main.k65                        main
 -o main.prg
 
 -link
-!vic20 main.prg
+!flatpak run --command=xvic net.sf.VICE main.prg

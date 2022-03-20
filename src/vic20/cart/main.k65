@@ -1,7 +1,80 @@
 //-------------------------------------------------------------------------------
+[
+  C_SPACE=0x20
+  C_SHIP_BACK=0x1E
+  C_SHIP_FRONT=0x1F
+
+  WHITE=1  
+]
+//-------------------------------------------------------------------------------
+
+/*
+  $1C00-$1FFF custom charset memory (I used only 2 pages)
+  $1E00-$1FFF	custom screen memory
+  $9600-$97FF	character colors
+*/
+
+var OS_CHARSET=0x8000, VIC=0x9000, COLOR_MAP=0x9600
+
+var chars=0x1C00, screen=0x1E00
+
+//-------------------------------------------------------------------------------
+
+func screen_init {
+  x=15 { VIC,x=a=vic_setup,x x-- }>=0
+}
+
+func clear_screen {
+  a=C_SPACE x=0 { screen,x=screen+0x100,x=a x++ }!=
+}
+
+func copy_chars {
+  x=0  { chars,x=a=OS_CHARSET,x chars+0x100,x=a=OS_CHARSET+0x100,x x++ }!=
+  x=15 { chars+0xF0,x=a=fonts,x x-- }>=0
+}
+
+func draw_ship {
+  screen=a=C_SHIP_BACK screen+1=a=C_SHIP_FRONT
+  COLOR_MAP=COLOR_MAP+1=a=WHITE
+}
+
+//-------------------------------------------------------------------------------
 
 main {
+  copy_chars clear_screen screen_init
+  draw_ship
   {} always
+}
+
+//-------------------------------------------------------------------------------
+
+/*
+  registers set to:
+  $1C00 chars
+  $1E00 screen
+*/
+data vic_setup {
+  0x0C      // $9000 - horizontal centering
+  0x26      // $9001 - vertical centering
+  0x96      // $9002 - set # of columns; bit 7 is auxiliary byte of video address
+  0xAE      // $9003 - set # of rows
+  0x7A      // $9004 - TV raster beam line
+  0xFF      // $9005 - bits 0-3 start of character memory; 4-7 bytes of video address
+  0x57      // $9006 - horizontal position of light pen
+  0xEA      // $9007 - vertical position of light pen
+  0xFF      // $9008 - Digitalized value of paddle X
+  0xFF      // $9009 - Digitalized value of paddle Y
+  0x00      // $900A - Frequency of oscillator 1 (low)
+  0x00      // $900B - Frequency of oscillator 2 (medium)
+  0x00      // $900C - Frequency of oscillator 3 (high)
+  0x00      // $900D - Frequency of noise source
+  0x00      // $900E - bit 0-3 sets volume of all sound; bits 4-7 are auxiliary color information
+  [0x66+8]  // $900F - screen and border color register
+}
+
+data fonts {
+  0x70 0x7B 0x1E 0x3F 0x33 0x1F 0x7B 0x70
+  0x00 0xE0 0x3C 0x1F 0xF3 0x8C 0xF0 0x00
 }
 
 //-------------------------------------------------------------------------------
