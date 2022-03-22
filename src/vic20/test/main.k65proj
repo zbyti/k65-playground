@@ -1,8 +1,0 @@
--system VIC20
-
-main.k65                        main
-
--o main.prg
-
--link
-!flatpak run --command=xvic net.sf.VICE main.prg
