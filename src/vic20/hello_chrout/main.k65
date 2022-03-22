@@ -1,0 +1,46 @@
+/*
+  Commodore VIC-20 ROM Addresses
+  http://www.cbmitapages.it/vic20/vic20rom.html
+
+  The Complete Commodore Inner Space Anthology
+  http://www.c64os.com/post/Vic20C64SuperChart
+*/
+
+[
+  clear=147
+]
+
+//-------------------------------------------------------------------------------
+
+/*
+  var CHROUT=0xFFD2
+  this vector points to $F27A
+*/
+
+var CHROUT=0xF27A
+
+//-------------------------------------------------------------------------------
+
+inline clrscr {
+  a=clear call CHROUT
+}
+
+inline print_hello {
+  x=0xFF { x++ a=hello,x call CHROUT }z-?
+}
+
+//-------------------------------------------------------------------------------
+
+main {
+  clrscr print_hello return
+}
+
+//-------------------------------------------------------------------------------
+
+data text_data {
+  charset "............................. ..................................@ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+  hello: "HELLO WORLD" 0
+}
+
+//-------------------------------------------------------------------------------
