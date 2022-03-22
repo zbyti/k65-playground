@@ -1,6 +1,0 @@
-var bcol=0xd020
-
-main {
-  data { 0xEA 0xEA 0xEA }
-  { bcol++ } always
-}

@@ -1,8 +1,0 @@
--system C64
-
-main.k65                        main
-
--o main.prg
-
--link
-!x64 main.prg
