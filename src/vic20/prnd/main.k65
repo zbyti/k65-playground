@@ -9,7 +9,7 @@
 
 var CLOCK=0xA2, RND=0xFB
 
-var SCREEN_RAM=0x1E00, COLOR_RAM=0x9600, VIC=0x9000, TIMER=0x9126
+var SCREEN_RAM=0x1E00, COLOR_RAM=0x9600, VIC=0x9000, TIMER1=0x9115, TIMER2=0x9126
     
 
 //-------------------------------------------------------------------------------
@@ -31,7 +31,7 @@ inline clrscr {
 
 
 func prnd {
-  a=RND a<< a^VIC+4 a<<< a^CLOCK a+TIMER a<<< a^VIC+4 RND=a
+  a=RND a^TIMER2+1 a<< a^VIC+4 a<<< a^CLOCK a+TIMER2 a<<< a^TIMER1 RND=a
 }
 
 //-------------------------------------------------------------------------------
@@ -41,7 +41,6 @@ main {
 
   {
     a=130 rsync
-    //a=2 wait
     prnd x=RND SCREEN_RAM,x=a=0
  
   } always
