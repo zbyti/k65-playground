@@ -31,7 +31,6 @@ inline rsync {
   { a?VIC+4 }!=
 }
 
-
 func wait {
   c- a+CLOCK { a?CLOCK }!=
 }
