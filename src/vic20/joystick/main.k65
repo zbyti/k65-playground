@@ -1,0 +1,68 @@
+//-------------------------------------------------------------------------------
+
+[
+  BLACK   = 0
+  SPACE   = 0x20
+
+  RIGHT   = 0x12
+  LEFT    = 0x0C
+  UP      = 0x15
+  DOWN    = 0x04
+  FIRE    = 0x06
+
+  CLEAR   = 147
+]
+
+//-------------------------------------------------------------------------------
+
+var tmp=0xFB
+
+var SCREEN_RAM=0x1E00, COLOR_RAM=0x9600, VIC=0x9000, CHROUT=0xF27A
+
+var IO1A=0x9111, DDR1A=0x9113, IO1B=0x9120, DDR2B=0x9122
+    
+
+//-------------------------------------------------------------------------------
+
+
+inline rsync {
+  { a?VIC+4 }!=
+}
+
+inline clrscr {
+  a=CLEAR call CHROUT
+}
+
+//-------------------------------------------------------------------------------
+
+func read_joy_status {
+  x=DDR1A y=DDR2B
+
+  DDR1A=a=0xC3 a=IO1A DDR1A=x
+  a&0x7F tmp=a
+  DDR2B=a=0x7F a=IO1B DDR2B=y
+  a&0x80 a|tmp tmp=a
+}
+
+//-------------------------------------------------------------------------------
+
+main {
+  clrscr COLOR_RAM=COLOR_RAM+1=a=BLACK
+  {
+    a=130 rsync
+ 
+    SCREEN_RAM=SCREEN_RAM+1=a=SPACE
+
+    read_joy_status
+
+    a=0b10000000 a&tmp =={ SCREEN_RAM=a=RIGHT  }
+    a=0b00010000 a&tmp =={ SCREEN_RAM=a=LEFT   }
+    a=0b00001000 a&tmp =={ SCREEN_RAM=a=DOWN   }
+    a=0b00000100 a&tmp =={ SCREEN_RAM=a=UP     }
+
+    a=0b00100000 a&tmp =={ SCREEN_RAM+1=a=FIRE }
+ 
+  } always
+}
+
+//-------------------------------------------------------------------------------
