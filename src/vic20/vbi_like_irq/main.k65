@@ -1,0 +1,131 @@
+//-------------------------------------------------------------------------------
+
+[
+  WHITE=1
+  SPACE=0x20
+
+  IRQ_START=131
+  TIMER1_HI=0x56
+  TIMER1_LO=0x86
+]
+
+//-------------------------------------------------------------------------------
+
+var CLOCK=0, IRQVEC=0x0314, BRIVEC=0x0316, NMIVEC=0x0318
+
+var SCREEN_RAM=0x1E00, COLOR_RAM=0x9600, RESET=0xFD22
+
+var VIC=0x9000,
+    VIA1_14=0x911D, VIA1_15=0x911E,
+    VIA2_14=0x912D, VIA2_15=0x912E,
+    TIMER1L=0x9124, TIMER1H
+    
+
+//-------------------------------------------------------------------------------
+
+inline pause {
+  a=CLOCK { a?CLOCK }==
+}
+
+inline rsync {
+  { a?VIC+4 }!=
+}
+
+
+func wait {
+  c- a+CLOCK { a?CLOCK }!=
+}
+
+//-------------------------------------------------------------------------------
+
+func screen_init {
+  x=15 { VIC,x=a=vic_setup,x x-- }>=0
+}
+
+func clear_screen {
+  a=SPACE x=0 { SCREEN_RAM,x=a SCREEN_RAM+0x100,x=a x++ } !=
+  a=WHITE { COLOR_RAM,x=a COLOR_RAM+0x100,x=a x++ } !=
+}
+
+func write_hello {
+  x=0 {
+    a=hello,x z-?{ SCREEN_RAM,x=a x++ }
+  } z-?
+}
+
+//-------------------------------------------------------------------------------
+
+naked irq {
+  CLOCK++
+
+  VIC+15=a=0 x=a { x-- *28 }!= VIC+15=a=[0x66+8]
+
+  VIA2_14=a=0b01000000 a?? y=a a?? x=a a?? return_i
+}
+
+naked bri {
+  a?? y=a a?? x=a a?? return_i
+}
+
+
+naked nmi { i+ goto RESET }
+
+//-------------------------------------------------------------------------------
+
+main {
+  i+
+
+  VIA1_15=a=0b01111111  //disable all NMI
+  VIA2_15=a=0b11000000  //enable IRQ Timer No.1
+
+  NMIVEC=a=&<nmi NMIVEC+1=a=&>nmi
+  BRIVEC=x=&<bri BRIVEC+1=y=&>bri
+  IRQVEC=x=&<irq IRQVEC+1=y=&>irq
+
+  CLOCK=a=0
+
+  a=IRQ_START rsync TIMER1L=a=TIMER1_LO TIMER1H=a=TIMER1_HI
+
+  i-
+
+  screen_init clear_screen write_hello
+
+  {
+    a=50 wait SCREEN_RAM=a=CLOCK  
+  } always
+
+}
+
+//-------------------------------------------------------------------------------
+
+/*
+  registers set to:
+  $8000 chars
+  $1E00 screen
+*/
+data vic_setup {
+  0x0C      // $9000 - horizontal centering
+  0x26      // $9001 - vertical centering
+  0x96      // $9002 - set # of columns; bit 7 is auxiliary byte of video address
+  0xAE      // $9003 - set # of rows
+  0x7A      // $9004 - TV raster beam line
+  0xF0      // $9005 - bits 0-3 start of character memory; 4-7 bytes of video address
+  0x57      // $9006 - horizontal position of light pen
+  0xEA      // $9007 - vertical position of light pen
+  0xFF      // $9008 - Digitalized value of paddle X
+  0xFF      // $9009 - Digitalized value of paddle Y
+  0x00      // $900A - Frequency of oscillator 1 (low)
+  0x00      // $900B - Frequency of oscillator 2 (medium)
+  0x00      // $900C - Frequency of oscillator 3 (high)
+  0x00      // $900D - Frequency of noise source
+  0x00      // $900E - bit 0-3 sets volume of all sound; bits 4-7 are auxiliary color information
+  [0x66+8]  // $900F - screen and border color register
+}
+
+data text_data {
+  charset ".ABCDEFGHIJKLMNOPQRSTUVWXYZ..... "
+
+  hello: "  HELLO WORLD" 0
+}
+
+//-------------------------------------------------------------------------------
