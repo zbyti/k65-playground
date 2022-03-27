@@ -9,7 +9,7 @@
 //-------------------------------------------------------------------------------
 
 /*
-  $1C00-$1FFF custom charset memory (I used only 2 pages)
+  $1C00-$1FFF custom charset memory
   $1E00-$1FFF	custom screen memory
   $9600-$97FF	character colors
 */

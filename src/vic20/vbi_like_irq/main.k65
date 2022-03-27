@@ -16,8 +16,8 @@ var CLOCK=0, IRQVEC=0x0314, BRIVEC=0x0316, NMIVEC=0x0318
 var SCREEN_RAM=0x1E00, COLOR_RAM=0x9600, RESET=0xFD22
 
 var VIC=0x9000,
-    VIA1_14=0x911D, VIA1_15=0x911E,
-    VIA2_14=0x912D, VIA2_15=0x912E,
+    VIA1_12=0x911B, VIA1_14=0x911D, VIA1_15=0x911E, 
+    VIA2_12=0x912B, VIA2_14=0x912D, VIA2_15=0x912E, 
     TIMER1L=0x9124, TIMER1H
     
 
@@ -74,8 +74,9 @@ naked nmi { i+ goto RESET }
 main {
   i+
 
-  VIA1_15=a=0b01111111  //disable all NMI
-  VIA2_15=a=0b11000000  //enable IRQ Timer No.1
+  VIA1_15=a=0b01111111  //Disable all NMI
+  VIA2_15=a=0b11000000  //Enable IRQ Timer No.1
+  VIA2_12=a=0b01000000  //Timer No.1 in continuous free-running mode
 
   NMIVEC=a=&<nmi NMIVEC+1=a=&>nmi
   BRIVEC=x=&<bri BRIVEC+1=y=&>bri
