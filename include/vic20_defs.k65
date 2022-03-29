@@ -1,0 +1,595 @@
+/*
+o---------------------------------------------------------------------------------------------------------------o
+| Unexpanded, System Off -  Memory Map Example                                                                  |
+o---------------------------------------------------------------------------------------------------------------o
+
+
+
+
+  $0000-$00FF free
+  $0100-$01ff CPU stack
+  $0200-$0313 free
+  $0314-$0315 IRQ vector
+  $0316-$0317 BRK vector
+  $0318-$0319 NMI vector
+  $031A-$03ff free
+  $1000-$17ff free
+  $1800-$1BFF custom charset memory
+  $1C00-$1DFF free
+  $1E00-$1FF9	custom screen memory (506 bytes)
+  $1FFA-$1FFF 6 free bytes
+  $9000-$93FF HW registers: VIC, 2xVIA
+  $9400-$95FF free nibbles          (4-bit memory)
+  $9600-$97F9	color map (506 bytes) (4-bit memory)
+  $97FA-$9FFF 6 free nibbles        (4-bit memory)
+
+
+
+
+o---------------------------------------------------------------------------------------------------------------o
+| The 6560/6561 VIC Chip Registers ($9000 - $900F)                                                              |
+o---------------------------------------------------------------------------------------------------------------o
+
+
+
+
+o--------------------------------------------------------o
+| VIC 6560 NTSC / 6561 PAL                               |
+o--------------------------------------------------------o-------------------------------------o
+| Register | Hexadecimal |    Bit 7    | Bit 6 | Bit 5 | Bit 4 | Bit 3 | Bit 2 | Bit 1 | Bit 0 |
+o----------------------------------------------------------------------------------------------o
+|     0    |    9000     |  Interlace  |                 Horizontal origin                     |
+|----------------------------------------------------------------------------------------------|
+|     1    |    9001     |                           Vertical origin                           |
+|----------------------------------------------------------------------------------------------|
+|     2    |    9002     | Vid. Ad. b9 |                   Number of columns                   |
+|----------------------------------------------------------------------------------------------|
+|     3    |    9003     |    Rast. b0 |                 Number of rows                |  8/16 |
+|----------------------------------------------------------------------------------------------|
+|     4    |    9004     |                        Raster line (bits 8-1)                       |
+|----------------------------------------------------------------------------------------------|
+|     5    |    9005     |       Video addr (bits 13-10)       |   Char addr (bits 13-10)      |
+|----------------------------------------------------------------------------------------------|
+|     6    |    9006     |                         Light pen horizontal                        |
+|----------------------------------------------------------------------------------------------|
+|     7    |    9007     |                          Light pen vertical                         |
+|----------------------------------------------------------------------------------------------|
+|     8    |    9008     |                             Paddle X                                |
+|----------------------------------------------------------------------------------------------|
+|     9    |    9009     |                             Paddle Y                                |
+|----------------------------------------------------------------------------------------------|
+|    10    |    900A     |    enable   |                Oscillator 1 frequency                 |
+|----------------------------------------------------------------------------------------------|
+|    11    |    900B     |    enable   |                Oscillator 2 frequency                 |
+|----------------------------------------------------------------------------------------------|
+|    12    |    900C     |    enable   |                Oscillator 3 frequency                 |
+|----------------------------------------------------------------------------------------------|
+|    13    |    900D     |    enable   |                 White noise frequency                 |
+|----------------------------------------------------------------------------------------------|
+|    14    |    900E     |      AUX color (multi-color)        |            Volume             |
+|----------------------------------------------------------------------------------------------|
+|    15    |    900F     |               Background	           | RV |         Border           |
+o----------------------------------------------------------------------------------------------o
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------
+
+
+
+
+$9000 ABBBBBBB      A: interlace mode (6560-101 only): 0=off, 1=on
+$9001 CCCCCCCC         In this mode, the videochip will draw 525 interlaced lines of 65 cycles
+$9002 HDDDDDDD         per line, instead of the 261 non-interlaced lines in the normal mode.
+$9003 GEEEEEEF         This bit has no effect on the 6561-101.
+$9004 GGGGGGGG      B: screen origin X (4 pixels granularity)
+$9005 HHHHIIII         6560-101: at 22 chars/line, the suitable range is 1 to 8
+$9006 JJJJJJJJ                   With 22 chars/line, the value 8 will show only 6 pixels of the
+$9007 KKKKKKKK                   rightmost column
+$9008 LLLLLLLL         6561-101: at 22 chars/line, the suitable range is 5 to 19
+$9009 MMMMMMMM                   With 22 chars/line, the value 20 will show only 5 pixels of the
+$900A NRRRRRRR                   rightmost column
+$900B OSSSSSSS         Both:     If the value B+2*D is greater than CYCLES_PER_LINE-4,
+$900C PTTTTTTT                   the picture will mix up.
+$900D QUUUUUUU                   With the value 0, there is some disturbance on the screen bottom.
+$900E WWWWVVVV      C: screen origin Y (2 lines granularity)
+$900F XXXXYZZZ         6560-101: suitable range is 14 to 130=(261-1)/2,
+                                 which will display one raster line of text.
+                       6561-101: suitable range is 14 to 155=312/2-1
+                       Both:     No wraparound
+                    D: number of video columns
+                       6560 range: 0-26 makes sense, >31 will be interpreted as 31.
+                       6561-101: 0-29 makes sense, >32 will be interpreted as 32.
+                    E: number of video rows (0-63)
+                       6560-101 practical range: 0-29; at C=14, >=30 gives 29 1/8
+                       6561-101 practical range: 0-35; at C=14, >=36 gives 35.
+                    F: character size (1=8x16, 0=8x8)
+                    G: current raster line ($9004=raster counter b8-b1, $9003 bit 7 = b0)
+                       Vertical blank is on lines 0 through 27.
+                    H: screen memory location
+                           $9005 7-4 = b13-b10,
+                           $9002 7   = b9 of screen and colour memory
+                    I: character memory location (b13-b10)
+                       * Note that b13 is connected to the inverse of A15 on the Vic-20.
+                    J: light pen X
+                    K: light pen Y
+                    L: paddle X
+                    M: paddle Y
+                    N: bass switch,    R: freq f=Phi2/256/(255-$900a)  NTSC: Phi2=14318181/14 Hz
+                    O: alto switch,    S: freq f=Phi2/128/(255-$900b)  PAL:  Phi2=4433618/4 Hz
+                    P: soprano switch, T: freq f=Phi2/64/(255-$900c)
+                    Q: noise switch,   U: freq f=Phi2/32/(255-$900d)
+                    W: auxiliary colour (multi-color)
+                    V: volume control
+                    X: screen colour
+                    Y: reverse mode
+                    Z: border colour
+
+
+
+-----------------------------------------------------------------------------------------------------------------
+
+
+
+
+o-------------------------------------------------------------o
+| The 6560/6561 VIC Chip Registers in details                 |
+o-------------------------------------------------------------o
+
+
+
+
+$9000 VICCR0 Left edge of TV picture and interlace switch.
+             Default value: $05
+
+  bit  7   - Interlace scan bit
+             Default value: 0
+  
+  bits 6-0 - Horizontal TV picture origin.
+             Default value: 5
+
+$9001 VICCR1 Vertical TV picture origin.
+             Default value: $19
+
+  bits 7-0 - Vertical TV picture origin
+             Default value: 25 
+
+$9002 VICCR2 Number of columns displayed, part of screen map address.
+             Default value: $96
+
+  bit  7   - This bit serves as bit 9 of the 14-bit screen map address used by the VIC chip.
+             Default value: 1
+
+  bits 6-0 - These bits contain the number of character columns displayed on each TV display
+             line. This value can range from 0 to 25. Although some stunning graphics can be
+             created by raising this value and eliminating the border.
+             Default value: 22
+
+$9003 VICCR3 Number of character lines displayed, part of raster location.
+             Default value: $AE or $2E
+
+  bit  7   - Raster beam location bit 0. Combine this, as the low order bit, with location $9004.
+             Default value: 1/0
+
+  bits 6-1 - Number of character lines displayed on the TV picture multiplied by two. By varying
+             this value, you can make the border expand or shrink and use fewer or more TV lines.
+             The same considerations apply for these bits as for location $9002 bits 6-0. The value in this
+             position is multiplied by two because the low order bit of this byte is used for other
+             purposes. Thirty to thirty-two seems to be about the maximum useful number of screen lines.
+             Default value: 46
+
+  bit  0   - Character size 8x8, or 8x16 pixels. When bitmapping the screen or doing other custom
+             character set tasks, this bit can be set to specify the double-sized character option
+             (8 pixels wide by 16 high). The bottom of the border will drop off the TV, and you'll see
+             only eleven and a half double-sized character lines (unless you also adjust the vertical
+             TV picture origin in $9001. A zero in this bit position specifies 8x8 character size, while
+             a one selects 8x16 characters. When double-sized characters are used, only the first half
+             of the screen map is significant, each POKE code being used to obtain the 8x16 definition of
+             a double-sized (twice as high—16—rather than 8 dots high) character to display.
+             Default value: 0
+
+$9004 VICCR4 Raster beam location bits 8-1.
+
+  bits 7-0 - When combined with the high order bit of location $9003 as the low order bit, this value
+             tracks the location of the electron beam as it refreshes the TV picture. If you were to
+             use only this location to reference the raster location, you would only sense every other TV line.
+
+$9005 VICCR5 Screen map and character map addresses.
+             Default value: $F0
+
+  bits 7-4 - These bits serve as bits 13-10 of the screen map address, combined with bit 7 of $9002 to
+             form the 14-bit VIC chip screen map address. Let's put together the 14-bit address as seen
+             by the VIC chip, using the 240 ($F0) default value in this location and the default 1 in
+             the high order bit of VICCR2.
+             Default value: 240
+
+  bits 3-0 - These serve as bits 13-10 of the character map 14-bit address. They are used to form the
+             14-bit VIC chip address that points to the beginning of the current 2048-byte (2K)
+             character map or custom character set.
+             Default value: 0
+
+$9006 VICCR6 Light pen horizontal screen location.
+             Default value: $00
+
+$9007 VICCR7 Light pen vertical screen location.
+             Default value: $00
+
+$9008 VICCR8 Potentiometer X/Paddle X value.
+             Default value: $FF
+
+$9009 VICCR9 Potentiometer Y/Paddle Y value.
+             Default value: $FF
+
+
+o-----------------------------o
+| Sound registers $900A-$900E |
+o-----------------------------o
+
+
+$900A VICCRA Relative frequency of sound oscillator 1 (bass).
+             Default value: $00
+
+  bit  7   - Switch to enable (1) or disable (0) this oscillator.
+
+  bits 6-0 - Low sound voice (sawtooth waveform). This is the softest sound oscillator,
+             with a range of values from 0 (no sound) to 127 (highest tone).
+
+$900B VICCRB Relative frequency of sound oscillator 2 (alto).
+             Default value: $00
+
+  bit  7   - Switch to enable (1) or disable (0) this oscillator.
+
+  bits 6-0 - Medium sound voice (pulse waveform). These bits serve as the medium sound oscillator,
+             with a range of values from 0 (no sound) to 127 (highest tone). Its range is from 63
+             to 7990 hertz.
+
+$900C VICCRC Relative frequency of sound oscillator 3 (soprano).
+             Default value: $00
+
+  bit  7   - Switch to enable (1) or disable (0) this oscillator.
+
+  bits 6-0 - High sound voice (pulse waveform). This oscillator's values range from 0 (no sound) to 127
+             (highest tone). Its range is 127-15,980 hertz.
+
+$900D VICCRD Relative frequency of sound oscillator 4 (noise).
+             Default value: $00
+
+  bit  7   - Switch to enable (1) or disable (0) this oscillator.
+
+  bits 6-0 - Noise voice (square waveform). The sharpest sound oscillator, with values ranging from
+             0 (no sound) to 127 (highest tone), its range is from 252 to 31960 hertz.
+
+$900E VICCRE Sound volume and auxiliary color.
+             Default value: $00
+
+  bits 7-4 - Auxiliary color for multicolor mode. A bit value %11 selects this auxiliary color.
+
+  bits 3-0 - Sound volume 0 (low) to 15 (high). These four bits set the combined volume of all
+             sound oscillators. Turning the sound volume to zero does not turn off the oscillators;
+             this is done by turning bit 7. The difference between two settings, an increment apart,
+             of this value may be hardly noticeable on a TV or monitor due to its limited sound system.
+
+$900F VICCRF Background color, border color, inverse color switch.
+             Default value: $1B
+
+  bits 7-4 - These four bits determine the background color of the screen. In multicolor mode,
+             this color is selected with bit values of binary %00.
+             Default value: 0
+
+  bit  3   - This bit serves as the inverse color switch. When set to one, the background and foreground
+             colors are in their respective places. Setting this to zero, however, inverts that scheme.
+             The foreground color will be used for the background and all the characters are shaded in the
+             background color. This bit has no effect when multicolor mode is in effect for individual
+             characters.
+             Default value: 1
+
+  bits 2-0 - These three bits control the border color surrounding the screen.
+             Default value: 3
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------
+
+
+
+
+o-------------------------------------------------------------o
+| $9005 (bits 0-3) Character Map Location (unexpanded)        |
+| Hex Value   Hex Address   Type of characters                |
+o-------------------------------------------------------------o
+|  0           8000        uppercase                          |
+|  1           8400        uppercase reversed                 |
+|  2           8800        lowercase                          |
+|  3           8C00        lowercase reversed                 |
+|  4           9000        don't use - VIC chip               |
+|  5           9400        don't use - color map              |
+|  6           9800        don't use - I/O block              |
+|  7           9C00        don't use - I/O block              |
+|  8           0000        don't use - low RAM                |
+|  9           0400        can't be accessed                  |
+|  A           0800        can't be accessed                  |
+|  B           0C00        can't be accessed                  |
+|  C           1000        custom character set               |
+|  D           1400        custom character set               |
+|  E           1800        custom character set               |
+|  F           1C00        custom character set (2 pages)     |
+o-------------------------------------------------------------o
+
+o-------------------------------------------------------------o
+| $9005       $9002                                           |
+| Bits 7-4    Bit 7       Screen Map  Colour Map              |
+o-------------------------------------------------------------o
+| 1100            0         $1000       $9400                 |
+| 1100            1         $1200       $9600                 |
+| 1101            0         $1400       $9400                 |
+| 1101            1         $1600       $9600                 |
+| 1110            0         $1800       $9400                 |
+| 1110            1         $1A00       $9600                 |
+| 1111            0         $1C00       $9400                 |
+| 1111            1         $1E00       $9600                 |
+o-------------------------------------------------------------o
+
+o-------------------------------------------------------------o
+| Memory          Basic       Screen map      Colour map      |
+o-------------------------------------------------------------o
+| Unexpanded  $1000-$1DFF     $1E00-$1FFF     $9600-$97FF     |
+| +3K         $0400-$1DFF     $1E00-$1FFF     $9600-$97FF     |
+| +8K         $1200-$3FFF     $1000-$11FF     $9400-$95FF     |
+| +16K        $1200-$5FFF     $1000-$11FF     $9400-$95FF     |
+| +24K        $1200-$7FFF     $1000-$11FF     $9400-$95FF     |
+o-------------------------------------------------------------o
+
+o-------------------------------------------------------------o
+| Columns Rows     $9000               $9001                  |
+|               Bits 6-0                                      |
+|               Horizontal Offset   Vertical Offset           |
+o-------------------------------------------------------------o
+|  16      16       +6                  +16                   |
+|  22      23        0                    0                   |
+|  24      28       -3                   -9                   |
+|  25      30       -3                  -12                   |
+|  27      33       -5                  -19                   |
+o-------------------------------------------------------------o
+
+o-------------------------------------------------------------o
+| Multicolor Bit Settings                                     |
+o-------------------------------------------------------------o
+| bits color chosen      location     example                 |
+|                                    pixel map      colors    |
+o-------------------------------------------------------------o
+|  00  BackGround color  $900F      11 11 11 11   AU AU AU AU |
+|  01  BOrder color      $900F      01 00 00 11   BO BG BG AU |
+|  10  ForeGround color  Color Map  01 00 00 11   BO BG BG AU |
+|  11  AUxiliary color   $900E      01 00 00 11   BO BG BG AU |
+|                                   01 10 10 11   BO FG FG AU |
+|                                   01 10 10 11   BO FG FG AU |
+|                                   01 10 10 11   BO FG FG AU |
+|                                   01 01 01 11   BO BO BO AU |
+|                                                             |
+|                       BIT number: 76 54 32 10               | 
+o-------------------------------------------------------------o
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------
+
+
+
+
+o---------------------------------------------------------------------------------------------------------------o
+| Versatile Interface Adapters                                                                                  |
+o---------------------------------------------------------------------------------------------------------------o
+
+
+
+
+o-------------------------------------------------------------o
+| Auxiliary control register (ACR)                            |
+o-------------------------------------------------------------o
+
+  VIA No.1 - $911B / VIA No.2 - $912B
+
+  Default value: $40
+
+  The bit values marked with an asterisk (*) are those initialized
+  when the computer is first turned on, or after the RUN/STOP-RESTORE keys are
+  pressed.
+
+  bits 7-6 - Timer 1 options:
+ 
+    00 single interval mode, no PB7 output pulses
+   *01 free-running mode, no PB7 output pulses
+    10 single interval mode, PB7 negative pulsed
+    11 free-running mode, PB7 square wave (invert last pulse)   
+
+  bit  5   - Timer 2 options:
+
+    *0 single interval timing
+     1 countdown incoming PB6 pulses
+
+  bits 4-2 - Shift register options:
+
+  *000 shift register disabled
+   001 input data on line CB2 to shift register bit 0, using timer 2
+       LSB; output clock pulses on line CB1.
+   010 input data on line CB2 to shift register bit 0, using system
+       clock; output clock pulses on line CB1.
+   011 output data on line CB2 from shift register bit 7, using timer
+       2 LSB; recirculate bit 7 to bit 0, free running. CB2 can be
+       connected to an amplifier for sound.
+   100 output data on line CB2 from shift register bit 7, using timer
+       2 LSB as delay clock.
+   110 output data on line CB2 from shift register bit 7, using
+       system clock
+   111 output data on line CB2 from shift register bit 7, using the
+       external clock input on CB1.
+
+  bit  1   - Port B latch enable options: 
+
+    *0 Port B to reflect changing values on pins
+     1 Port in latch mode. If used for input, port B will show the sta
+       tus of the lines when a CB1 interrupt occurred. Otherwise, the
+       changing status of the lines is not reflected in the port.
+
+  bit  0   - Port A latch enable options:
+
+    *0 Port A to reflect changing values on pins
+     1 Port in latch mode. If used for input, port A will show the
+       status of the lines when a CA1 interrupt occurred. Otherwise, the
+       changing status of the lines is not reflected in the port.
+
+o-------------------------------------------------------------o
+| Iterrupt Flag Register (IFR)                                |
+o-------------------------------------------------------------o
+
+  VIA No.1 - $911D / VIA No.2 - $912D
+
+  7 - IRQ has occurred
+  6 - Timer 1 interrupt flag
+  5 - Timer 2 interrupt flag
+  4 - CB1 interrupt flag
+  3 - CB2 interrupt flag
+  2 - Shift Register interrupt flag
+  1 - CA1 interrupt flag
+  0 - CA2 interrupts flag
+
+o-------------------------------------------------------------o
+| Interrupt Enable Register (IER)                             |
+o-------------------------------------------------------------o
+  VIA No.1 - $911E / VIA No.2 - $912E
+
+  7 - IER set/clear control
+  6 - Timer 1 interrupt enable
+  5 - Timer 2 interrupt enable
+  4 - CB1 interrupt enable
+  3 - CB2 interrupt enable
+  2 - Shift register interrupt enable
+  1 - CA1 interrupt enable
+  0 - CA2 interrupt enable
+*/
+
+
+
+
+//***************************************************************************************************************
+//***************************************************************************************************************
+//***************************************************************************************************************
+//***************************************************************************************************************
+
+
+
+
+//---------------------------------------------------------------------------------------------------------------
+// Useful Constants
+//---------------------------------------------------------------------------------------------------------------
+
+
+
+
+[
+  BLACK        = 0
+  WHITE        = 1
+  RED          = 2
+  CYAN         = 3
+  PURPLE       = 4
+  GREEN        = 5
+  BLUE         = 6
+  YELLOW       = 7
+  ORANGE       = 8
+  LIGHT_ORANGE = 9
+  LIGHT_RED    = 10
+  LIGHT_CYAN   = 11
+  LIGHT_PURPLE = 12
+  LIGHT_GREEN  = 13
+  LIGHT_BLUE   = 14
+  LIGHT_YELLOW = 15
+]
+
+
+
+
+//---------------------------------------------------------------------------------------------------------------
+// System Interrupt Vectors
+//---------------------------------------------------------------------------------------------------------------
+
+
+
+
+var IRQVEC = 0x0314[2] // IRQ RAM vector
+var BRKVEC = 0x0316[2] // BRK instruction RAM vector
+var NMIVEC = 0x0318[2] // NMI RAM vector
+
+
+
+
+//---------------------------------------------------------------------------------------------------------------
+// The 6560/6561 VIC Chip Registers ($9000 - $900F)
+//---------------------------------------------------------------------------------------------------------------
+
+
+
+
+var VICCR0 = 0x9000,
+    VICCR1, VICCR2, VICCR3, VICCR4, VICCR5, VICCR6, VICCR7, VICCR8, VICCR9,
+    VICCRA, VICCRB, VICCRC, VICCRD, VICCRE, VICCRF
+
+
+
+
+//---------------------------------------------------------------------------------------------------------------
+// 6522 Versatile Interface Adapter 1 ($9110 - $911F) [VIA No.1] NMI interrupts
+//---------------------------------------------------------------------------------------------------------------
+
+
+
+
+var VIA1PB   = 0x9110 // VIA1PB Port B I/O register
+var VIA1PA   = 0x9111 // Port A I/O register
+var VIA1DDRB = 0x9112 // Data direction register for port B
+var VIA1DDRA = 0x9113 // Data direction register for port A
+var VIA1T1CL = 0x9114 // Timer 1 least significant byte (LSB) of count
+var VIA1T1CH = 0x9115 // Timer 1 most significant byte (MSB) of count
+var VIA1T1LL = 0x9116 // Timer 1 low order (LSB) latch byte
+var VIA1T1LH = 0x9117 // Timer 1 high order (MSB) latch byte
+var VIA1T2CL = 0x9118 // Timer 2 low order (LSB) counter and LSB latch
+var VIA1T2CH = 0x9119 // Timer 2 high order (MSB) counter and MSB latch
+var VIA1SR   = 0x911A // Shift register for parallel/serial conversion
+var VIA1ACR  = 0x911B // Auxiliary control register
+var VIA1PCR  = 0x911C // Peripheral control register for handshaking
+var VIA1IFR  = 0x911D // Interrupt flag register (IFR)
+var VIA1IER  = 0x911E // Interrupt enable register (IER)
+var VIA1PA2  = 0x911F // This is a mirror of port A I/O register at location $9111
+
+
+
+
+//---------------------------------------------------------------------------------------------------------------
+// 6522 Versatile Interface Adapter 2 ($9120 - $912F) [VIA No.2] IRQ interrupts
+//---------------------------------------------------------------------------------------------------------------
+
+
+
+
+var VIA2PB   = 0x9120 // VIA2PB Port B I/O register
+var VIA2PA   = 0x9121 // Port A I/O register
+var VIA2DDRB = 0x9122 // Data direction register for port B
+var VIA2DDRA = 0x9123 // Data direction register for port A
+var VIA2T1CL = 0x9124 // Timer 1 least significant byte (LSB) of count
+var VIA2T1CH = 0x9125 // Timer 1 most significant byte (MSB) of count
+var VIA2T1LL = 0x9126 // Timer 1 low order (LSB) latch byte
+var VIA2T1LH = 0x9127 // Timer 1 high order (MSB) latch byte
+var VIA2T2CL = 0x9128 // Timer 2 low order (LSB) counter and LSB latch
+var VIA2T2CH = 0x9129 // Timer 2 high order (MSB) counter and MSB latch
+var VIA2SR   = 0x912A // Shift register for parallel/serial conversion
+var VIA2ACR  = 0x912B // Auxiliary control register
+var VIA2PCR  = 0x912C // Peripheral control register for handshaking
+var VIA2IFR  = 0x912D // Interrupt flag register (IFR)
+var VIA2IER  = 0x912E // Interrupt enable register (IER)
+var VIA2PA2  = 0x912F // This is a mirror of port A I/O register at location $9121
+
+
+
+
