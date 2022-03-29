@@ -518,9 +518,9 @@ o-------------------------------------------------------------o
 
 
 
-var IRQVEC = 0x0314[2] // IRQ RAM vector
-var BRKVEC = 0x0316[2] // BRK instruction RAM vector
-var NMIVEC = 0x0318[2] // NMI RAM vector
+var CINV  = 0x0314[2] // handler for IRQVEC ($FFFE); IRQ RAM vector
+var CBINV = 0x0316[2] // handler for RESVEC ($FFFC); BRK instruction RAM vector
+var NMINV = 0x0318[2] // handler for NMIVEC ($FFFA); NMI RAM vector
 
 
 
