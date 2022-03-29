@@ -16,11 +16,11 @@ o-------------------------------------------------------------------------------
   $1000-$17ff free
   $1800-$1BFF custom charset memory
   $1C00-$1DFF free
-  $1E00-$1FF9	custom screen memory (506 bytes)
+  $1E00-$1FF9 custom screen memory (506 bytes)
   $1FFA-$1FFF 6 free bytes
   $9000-$93FF HW registers: VIC, 2xVIA
   $9400-$95FF free nibbles          (4-bit memory)
-  $9600-$97F9	color map (506 bytes) (4-bit memory)
+  $9600-$97F9 color map (506 bytes) (4-bit memory)
   $97FA-$9FFF 6 free nibbles        (4-bit memory)
 
 
