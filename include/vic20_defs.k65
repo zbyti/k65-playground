@@ -518,9 +518,9 @@ o-------------------------------------------------------------o
 
 
 
-var CINV  = 0x0314[2] // handler for IRQVEC ($FFFE); IRQ RAM vector
-var CBINV = 0x0316[2] // handler for RESVEC ($FFFC); BRK instruction RAM vector
-var NMINV = 0x0318[2] // handler for NMIVEC ($FFFA); NMI RAM vector
+var CINV  = 0x0314[2] // handler for IRQVEC ($FFFE); Vector to the IRQ interrupt routine
+var CBINV = 0x0316[2] // handler for RESVEC ($FFFC); Vector to the BREAK interrupt routine
+var NMINV = 0x0318[2] // handler for NMIVEC ($FFFA); Vector to the NMI interrupt routine
 
 
 
